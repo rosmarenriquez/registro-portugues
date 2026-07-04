@@ -112,11 +112,11 @@
 
   <header class="top">
     <div>
-      <p class="eyebrow">=CORUJAS=</p>
+      <p class="eyebrow">==CORUJAS==</p>
       <h1>Trilha do Português</h1>
       <p class="sub">Cada tarefa te lleva un poco más lejos por Brasil. Suma puntos y sube de nivel.</p>
     </div>
-    <div class="mode-toggle">
+    <div class="mode-toggle" id="mode-toggle">
       <button id="btn-modo-aluno" class="active">Sou aluno</button>
       <button id="btn-modo-professor">Sou professor</button>
     </div>
@@ -124,7 +124,7 @@
 
   <!-- ================= MODO ALUNO ================= -->
   <div id="vista-aluno">
-    <div class="panel">
+    <div class="panel" id="panel-selector-aluno">
       <p class="eyebrow">Selecionar aluno</p>
       <select id="select-aluno"></select>
     </div>
@@ -139,7 +139,10 @@
             <div class="total-grande" id="aluno-total">0</div>
             <p class="sub" style="margin-top:2px;" id="proximo-nivel-txt"></p>
           </div>
-          <div class="badge" id="badge-nivel"></div>
+          <div style="display:flex;flex-direction:column;gap:8px;align-items:flex-end;">
+            <div class="badge" id="badge-nivel"></div>
+            <div class="badge" id="badge-posicion" style="color:var(--teal-bright);"></div>
+          </div>
         </div>
         <div class="trilha-wrap">
           <svg class="trilha" id="svg-trilha" viewBox="0 0 900 130" xmlns="http://www.w3.org/2000/svg"></svg>
@@ -234,6 +237,9 @@ const db = getFirestore(app);
 
 const TEACHER_PIN = "1234";
 let profesorDesbloqueado = false;
+
+const params = new URLSearchParams(window.location.search);
+const alumnoFijo = params.get('alumno'); // si viene en la URL, el alumno solo ve sus propios datos
 
 const NIVELES = [
   {nombre:"Turista Brasileiro", emoji:"🌴", min:0, max:24},
@@ -361,25 +367,49 @@ function dibujarTrilha(totalPuntos){
 
 async function renderAluno(){
   const select = document.getElementById('select-aluno');
-  poblarSelect(select);
+  const panelSelector = document.getElementById('panel-selector-aluno');
+  const modeToggle = document.getElementById('mode-toggle');
   const vacio = document.getElementById('aluno-vazio');
   const contenido = document.getElementById('aluno-contenido');
+
+  if(alumnoFijo){
+    // Link personal: se oculta el selector y el botón de "Sou professor"
+    panelSelector.classList.add('hidden');
+    modeToggle.classList.add('hidden');
+  } else {
+    poblarSelect(select);
+  }
 
   if(roster.length === 0){
     vacio.classList.remove('hidden');
     contenido.classList.add('hidden');
     return;
   }
+
+  const id = alumnoFijo || select.value;
+  const alumnoExiste = roster.some(s => s.id === id);
+
+  if(!alumnoExiste){
+    vacio.classList.remove('hidden');
+    vacio.textContent = alumnoFijo
+      ? 'No encontramos tu registro. Pídele el link correcto a tu profesor.'
+      : 'Todavía no hay alumnos cargados. Pídele a tu profesor que te agregue en el modo Professor.';
+    contenido.classList.add('hidden');
+    return;
+  }
   vacio.classList.add('hidden');
   contenido.classList.remove('hidden');
 
-  const id = select.value;
-  const data = await cargarAlumno(id);
+  const data = cargarAlumno(id);
   const nivel = nivelDe(data.total);
 
   document.getElementById('nivel-emoji-nome').textContent = 'Nível atual';
   document.getElementById('aluno-total').textContent = data.total + ' pts';
   document.getElementById('badge-nivel').textContent = nivel.emoji + ' ' + nivel.nombre;
+
+  const totales = roster.map(s => cargarAlumno(s.id).total);
+  const posicion = 1 + totales.filter(t => t > data.total).length;
+  document.getElementById('badge-posicion').textContent = `🏆 Puesto ${posicion} de ${roster.length}`;
 
   if(nivel.idx < NIVELES.length-1){
     const faltan = NIVELES[nivel.idx].max - data.total + 1;
@@ -445,11 +475,21 @@ async function renderRanking(){
     const row = document.createElement('div');
     row.className = 'roster-item';
     row.innerHTML = `<span class="name">${nivel.emoji} ${s.name}</span>
-      <span style="display:flex;align-items:center;gap:10px;">
+      <span style="display:flex;align-items:center;gap:8px;">
         <span class="pts">${s.total} pts · ${nivel.nombre}</span>
+        <button class="btn secondary" style="padding:5px 10px;font-size:11px;" data-linkid="${s.id}">Copiar link</button>
         <button class="btn danger" style="padding:5px 10px;font-size:11px;" data-id="${s.id}" data-name="${s.name}">Eliminar</button>
       </span>`;
-    row.querySelector('button').onclick = (e)=>{
+    row.querySelector('[data-linkid]').onclick = (e)=>{
+      const url = `${window.location.origin}${window.location.pathname}?alumno=${e.target.dataset.linkid}`;
+      navigator.clipboard.writeText(url).then(()=>{
+        e.target.textContent = '¡Copiado!';
+        setTimeout(()=>{ e.target.textContent = 'Copiar link'; }, 1500);
+      }).catch(()=>{
+        prompt('Copia este link manualmente:', url);
+      });
+    };
+    row.querySelector('[data-id]').onclick = (e)=>{
       eliminarAlumno(e.target.dataset.id, e.target.dataset.name);
     };
     lista.appendChild(row);
