@@ -232,7 +232,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-const TEACHER_PIN = "1379";
+const TEACHER_PIN = "1234";
 let profesorDesbloqueado = false;
 
 const NIVELES = [
@@ -300,6 +300,7 @@ function uid(){
 }
 
 function poblarSelect(select, incluirVacio){
+  const valorPrevio = select.value;
   select.innerHTML = '';
   if(roster.length === 0){
     const opt = document.createElement('option');
@@ -313,6 +314,9 @@ function poblarSelect(select, incluirVacio){
     opt.textContent = s.name;
     select.appendChild(opt);
   });
+  if(roster.some(s=>s.id === valorPrevio)){
+    select.value = valorPrevio;
+  }
 }
 
 function dibujarTrilha(totalPuntos){
