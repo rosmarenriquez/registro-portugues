@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Trilha do Português — Registro de progreso</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Inter:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg-deep:#0E3B3A;
+    --bg-panel:#123F3E;
+    --bg-panel-2:#15473F;
+    --cream:#F5E9D3;
+    --cream-dim:#D8CBAA;
+    --coral:#FF6B4A;
+    --coral-dark:#B23E22;
+    --gold:#F4B740;
+    --gold-dark:#8A5F0F;
+    --teal-bright:#2FBF9F;
+    --teal-dark:#0B2E2C;
+    --line: rgba(245,233,211,0.14);
+    --danger:#E4574A;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--bg-deep);
+    color:var(--cream);
+    font-family:'Inter',sans-serif;
+    min-height:100vh;
+  }
+  .wrap{max-width:920px;margin:0 auto;padding:32px 20px 80px;}
+  h1,h2,h3{font-family:'Baloo 2',sans-serif;font-weight:700;margin:0;color:var(--cream);}
+  .eyebrow{
+    font-family:'Space Mono',monospace;
+    font-size:12px;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--teal-bright);margin:0 0 6px;
+  }
+  header.top{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap;margin-bottom:28px;}
+  header.top h1{font-size:32px;}
+  .sub{color:var(--cream-dim);font-size:14px;margin-top:6px;max-width:420px;}
+  .mode-toggle{display:flex;gap:8px;background:var(--bg-panel);border:1px solid var(--line);border-radius:999px;padding:4px;}
+  .mode-toggle button{
+    border:none;background:transparent;color:var(--cream-dim);
+    font-family:'Inter',sans-serif;font-weight:600;font-size:13px;
+    padding:9px 18px;border-radius:999px;cursor:pointer;transition:all .15s;
+  }
+  .mode-toggle button.active{background:var(--coral);color:#2B1006;}
+  .panel{background:var(--bg-panel);border:1px solid var(--line);border-radius:16px;padding:22px 24px;margin-bottom:20px;}
+  select,input[type=text],input[type=number],input[type=password]{
+    background:var(--teal-dark);border:1px solid var(--line);color:var(--cream);
+    font-family:'Inter',sans-serif;font-size:14px;padding:10px 12px;border-radius:10px;
+    outline:none;width:100%;
+  }
+  select:focus,input:focus{border-color:var(--teal-bright);}
+  button.btn{
+    font-family:'Inter',sans-serif;font-weight:600;font-size:13px;
+    background:var(--teal-bright);color:#04231D;border:none;
+    padding:10px 16px;border-radius:10px;cursor:pointer;transition:transform .1s;
+  }
+  button.btn:active{transform:scale(.97);}
+  button.btn.secondary{background:transparent;border:1px solid var(--line);color:var(--cream);}
+  button.btn.coral{background:var(--coral);color:#2B1006;}
+  button.btn.danger{background:transparent;border:1px solid var(--danger);color:var(--danger);}
+  button.btn:disabled{opacity:.4;cursor:not-allowed;}
+  .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;}
+  .badge{
+    display:inline-flex;align-items:center;gap:6px;
+    font-family:'Space Mono',monospace;font-size:12px;
+    background:var(--teal-dark);border:1px solid var(--line);
+    padding:5px 10px;border-radius:999px;color:var(--gold);
+  }
+  /* trilha */
+  .trilha-wrap{position:relative;padding:36px 10px 10px;overflow-x:auto;}
+  svg.trilha{display:block;min-width:760px;}
+  .estacao-label{font-family:'Inter',sans-serif;font-size:10.5px;fill:var(--cream-dim);}
+  .estacao-label.atual{fill:var(--gold);font-weight:700;}
+  .estacao-pontos{font-family:'Space Mono',monospace;font-size:9.5px;fill:var(--cream-dim);opacity:.7;}
+  /* cards de acao */
+  .acoes-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;margin-top:14px;}
+  .accion-card{
+    background:var(--teal-dark);border:1px solid var(--line);border-radius:12px;
+    padding:14px;text-align:left;cursor:pointer;transition:border-color .15s,background .15s;
+    color:var(--cream);font-family:'Inter',sans-serif;
+  }
+  .accion-card:hover{border-color:var(--teal-bright);background:var(--bg-panel-2);}
+  .accion-card .nome{font-weight:600;font-size:13.5px;display:block;margin-bottom:6px;}
+  .accion-card .pts{font-family:'Space Mono',monospace;color:var(--gold);font-size:13px;}
+  table{width:100%;border-collapse:collapse;font-size:13px;}
+  th{text-align:left;color:var(--cream-dim);font-weight:600;font-size:11.5px;text-transform:uppercase;letter-spacing:.05em;padding:8px 6px;border-bottom:1px solid var(--line);}
+  td{padding:9px 6px;border-bottom:1px solid var(--line);}
+  tr:last-child td{border-bottom:none;}
+  .empty{color:var(--cream-dim);font-size:13.5px;padding:18px 4px;text-align:center;}
+  .roster-item{display:flex;justify-content:space-between;align-items:center;padding:10px 4px;border-bottom:1px solid var(--line);}
+  .roster-item:last-child{border-bottom:none;}
+  .roster-item .name{font-weight:600;font-size:14px;}
+  .roster-item .pts{font-family:'Space Mono',monospace;color:var(--gold);font-size:13px;margin-left:8px;}
+  .lock-screen{text-align:center;padding:30px 10px;}
+  .lock-screen p{color:var(--cream-dim);font-size:13.5px;margin:8px 0 18px;}
+  .lock-screen input{max-width:180px;margin:0 auto 12px;text-align:center;}
+  ::placeholder{color:var(--cream-dim);opacity:.6;}
+  .hidden{display:none !important;}
+  .total-grande{font-family:'Baloo 2',sans-serif;font-size:44px;color:var(--gold);line-height:1;}
+  .divider{height:1px;background:var(--line);margin:18px 0;}
+  .flexbetween{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <div>
+      <p class="eyebrow">Turma de português</p>
+      <h1>Trilha do Português</h1>
+      <p class="sub">Cada tarefa te lleva un poco más lejos por Brasil. Sumá puntos y subí de nivel.</p>
+    </div>
+    <div class="mode-toggle">
+      <button id="btn-modo-aluno" class="active">Sou aluno</button>
+      <button id="btn-modo-professor">Sou professor</button>
+    </div>
+  </header>
+
+  <!-- ================= MODO ALUNO ================= -->
+  <div id="vista-aluno">
+    <div class="panel">
+      <p class="eyebrow">Selecionar aluno</p>
+      <select id="select-aluno"></select>
+    </div>
+
+    <div id="aluno-vazio" class="panel empty hidden">Todavía no hay alumnos cargados. Pídele a tu profesor que te agregue en el modo Professor.</div>
+
+    <div id="aluno-contenido" class="hidden">
+      <div class="panel">
+        <div class="flexbetween">
+          <div>
+            <p class="eyebrow" id="nivel-emoji-nome"></p>
+            <div class="total-grande" id="aluno-total">0</div>
+            <p class="sub" style="margin-top:2px;" id="proximo-nivel-txt"></p>
+          </div>
+          <div class="badge" id="badge-nivel"></div>
+        </div>
+        <div class="trilha-wrap">
+          <svg class="trilha" id="svg-trilha" viewBox="0 0 900 130" xmlns="http://www.w3.org/2000/svg"></svg>
+        </div>
+      </div>
+
+      <div class="panel">
+        <p class="eyebrow">Histórico de pontos</p>
+        <table id="tabla-historico-aluno">
+          <thead><tr><th>Fecha</th><th>Acción</th><th style="text-align:right;">Puntos</th></tr></thead>
+          <tbody></tbody>
+        </table>
+        <p class="empty hidden" id="historico-aluno-vacio">Todavía no tienes puntos registrados. ¡A por el primero!</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= MODO PROFESSOR ================= -->
+  <div id="vista-professor" class="hidden">
+
+    <div id="professor-lock" class="panel lock-screen">
+      <p class="eyebrow">Área do professor</p>
+      <h3>Ingresa el PIN</h3>
+      <p>Solo el profesor puede agregar puntos y gestionar alumnos.</p>
+      <input type="password" id="input-pin" placeholder="PIN">
+      <div><button class="btn coral" id="btn-desbloquear">Entrar</button></div>
+      <p class="sub" style="margin-top:14px;">PIN por defecto: 1234</p>
+    </div>
+
+    <div id="professor-contenido" class="hidden">
+
+      <div class="panel">
+        <p class="eyebrow">Agregar alumno</p>
+        <div class="row">
+          <input type="text" id="input-nuevo-alumno" placeholder="Nombre del alumno" style="flex:1;min-width:180px;">
+          <button class="btn coral" id="btn-agregar-alumno">Agregar</button>
+        </div>
+      </div>
+
+      <div class="panel">
+        <p class="eyebrow">Registrar puntos</p>
+        <select id="select-aluno-prof" style="margin-bottom:14px;"></select>
+        <div class="acoes-grid" id="grid-acciones"></div>
+        <div class="divider"></div>
+        <p class="eyebrow">Acción personalizada</p>
+        <div class="row">
+          <input type="text" id="input-accion-custom" placeholder="Nombre de la acción" style="flex:2;min-width:140px;">
+          <input type="number" id="input-puntos-custom" placeholder="Puntos" style="flex:1;min-width:80px;">
+          <button class="btn secondary" id="btn-accion-custom">Sumar</button>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="flexbetween">
+          <p class="eyebrow" style="margin:0;">Ranking de la clase</p>
+          <button class="btn secondary" id="btn-bloquear">Salir del modo professor</button>
+        </div>
+        <div id="ranking-lista"></div>
+        <p class="empty hidden" id="ranking-vacio">Agrega alumnos para ver el ranking.</p>
+      </div>
+
+      <div class="panel">
+        <p class="eyebrow">Deshacer último registro</p>
+        <div class="row">
+          <select id="select-aluno-deshacer" style="flex:1;min-width:180px;"></select>
+          <button class="btn danger" id="btn-deshacer">Quitar último punto</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
+import {
+  getFirestore, collection, doc, addDoc, setDoc, onSnapshot
+} from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
+
+// TODO: si algún día cambias de proyecto de Firebase, reemplaza esto por tu nuevo firebaseConfig
+const firebaseConfig = {
+  apiKey: "AIzaSyBd-YVv0cT68wh6ODc0F53vrPWrZXHyEOU",
+  authDomain: "portugues-alumnos.firebaseapp.com",
+  projectId: "portugues-alumnos",
+  storageBucket: "portugues-alumnos.firebasestorage.app",
+  messagingSenderId: "248320522672",
+  appId: "1:248320522672:web:6b61cd90ee636d69cbfe75"
+};
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+const TEACHER_PIN = "1234";
+let profesorDesbloqueado = false;
+
+const NIVELES = [
+  {nombre:"Turista Brasileiro", emoji:"🌴", min:0, max:24},
+  {nombre:"Carioca Iniciante", emoji:"😊", min:25, max:49},
+  {nombre:"Embaixador do Rio", emoji:"🏅", min:50, max:74},
+  {nombre:"Paulistano Dedicado", emoji:"☕", min:75, max:99},
+  {nombre:"Explorador da Bahia", emoji:"🎭", min:100, max:124},
+  {nombre:"Mestre de Curitiba", emoji:"🌲", min:125, max:149},
+  {nombre:"Embaixador de Florianópolis", emoji:"🏝️", min:150, max:174},
+  {nombre:"Mestre do Português", emoji:"🔥", min:175, max:Infinity},
+];
+
+const ACCIONES = [
+  {nombre:"Assistência", puntos:5},
+  {nombre:"Participação", puntos:3},
+  {nombre:"Tarefa", puntos:5},
+  {nombre:"Desafio", puntos:10},
+  {nombre:"Missão Final", puntos:20},
+];
+
+let roster = [];           // [{id, name}]
+let studentsMap = {};      // { id: {total, history:[]} }
+let listaLista = false;    // true cuando ya llegó la primera respuesta de Firestore
+
+function cargarAlumno(id){
+  // Ya no se pide a Firestore: los datos llegan solos vía onSnapshot y viven en studentsMap
+  return studentsMap[id] || {total:0, history:[]};
+}
+
+function refrescarUI(){
+  const modoAluno = !document.getElementById('vista-aluno').classList.contains('hidden');
+  if(modoAluno){ renderAluno(); }
+  else if(profesorDesbloqueado){ renderProfessor(); }
+}
+
+// Escucha en tiempo real la lista de alumnos
+onSnapshot(collection(db, 'roster'), (snapshot)=>{
+  roster = snapshot.docs.map(d => ({id: d.id, name: d.data().name}));
+  listaLista = true;
+  refrescarUI();
+});
+
+// Escucha en tiempo real los puntos/historial de todos los alumnos
+onSnapshot(collection(db, 'students'), (snapshot)=>{
+  studentsMap = {};
+  snapshot.docs.forEach(d => { studentsMap[d.id] = d.data(); });
+  refrescarUI();
+});
+
+function nivelDe(total){
+  for(let i=0;i<NIVELES.length;i++){
+    if(total >= NIVELES[i].min && total <= NIVELES[i].max) return {idx:i, ...NIVELES[i]};
+  }
+  return {idx:NIVELES.length-1, ...NIVELES[NIVELES.length-1]};
+}
+
+function fechaHoy(){
+  const d = new Date();
+  return d.toLocaleDateString('es-ES', {day:'2-digit', month:'2-digit', year:'numeric'});
+}
+
+function uid(){
+  return Date.now().toString(36) + Math.random().toString(36).slice(2,7);
+}
+
+function poblarSelect(select, incluirVacio){
+  select.innerHTML = '';
+  if(roster.length === 0){
+    const opt = document.createElement('option');
+    opt.textContent = incluirVacio || 'Sin alumnos';
+    select.appendChild(opt);
+    return;
+  }
+  roster.forEach(s=>{
+    const opt = document.createElement('option');
+    opt.value = s.id;
+    opt.textContent = s.name;
+    select.appendChild(opt);
+  });
+}
+
+function dibujarTrilha(totalPuntos){
+  const svg = document.getElementById('svg-trilha');
+  const n = NIVELES.length;
+  const marginX = 40;
+  const width = 900 - marginX*2;
+  const y = 55;
+  const nivel = nivelDe(totalPuntos);
+  let fraccion;
+  if(nivel.idx === n-1){
+    fraccion = 1;
+  } else {
+    fraccion = (totalPuntos - nivel.min) / (nivel.max - nivel.min + 1);
+  }
+  const posGlobal = (nivel.idx + fraccion) / n;
+
+  let svgContent = `<line x1="${marginX}" y1="${y}" x2="${marginX+width}" y2="${y}" stroke="var(--cream-dim,#D8CBAA)" stroke-opacity="0.25" stroke-width="3" stroke-linecap="round"/>`;
+
+  const progresoWidth = width * Math.min(posGlobal,1);
+  svgContent += `<line x1="${marginX}" y1="${y}" x2="${marginX+progresoWidth}" y2="${y}" stroke="#F4B740" stroke-width="3" stroke-linecap="round"/>`;
+
+  NIVELES.forEach((niv,i)=>{
+    const cx = marginX + (width * i/(n-1));
+    const activo = i <= nivel.idx;
+    const esActual = i === nivel.idx;
+    const fill = activo ? '#F4B740' : '#123F3E';
+    const stroke = activo ? '#F4B740' : '#D8CBAA';
+    svgContent += `<circle cx="${cx}" cy="${y}" r="${esActual?9:6}" fill="${fill}" stroke="${stroke}" stroke-width="2"/>`;
+    svgContent += `<text x="${cx}" y="${y-18}" text-anchor="middle" class="estacao-label ${esActual?'atual':''}">${niv.emoji}</text>`;
+    const nomeCorto = niv.nombre.length > 16 ? niv.nombre.slice(0,14)+'…' : niv.nombre;
+    svgContent += `<text x="${cx}" y="${y+24}" text-anchor="middle" class="estacao-label ${esActual?'atual':''}">${nomeCorto}</text>`;
+    svgContent += `<text x="${cx}" y="${y+36}" text-anchor="middle" class="estacao-pontos">${niv.max===Infinity? niv.min+'+' : niv.min+'-'+niv.max}</text>`;
+  });
+
+  const markerX = marginX + width * Math.min(posGlobal,1);
+  svgContent += `<circle cx="${markerX}" cy="${y}" r="12" fill="#FF6B4A" stroke="#F5E9D3" stroke-width="2"/>`;
+  svgContent += `<text x="${markerX}" y="${y+4}" text-anchor="middle" font-size="11">✈️</text>`;
+
+  svg.innerHTML = svgContent;
+}
+
+async function renderAluno(){
+  const select = document.getElementById('select-aluno');
+  poblarSelect(select);
+  const vacio = document.getElementById('aluno-vazio');
+  const contenido = document.getElementById('aluno-contenido');
+
+  if(roster.length === 0){
+    vacio.classList.remove('hidden');
+    contenido.classList.add('hidden');
+    return;
+  }
+  vacio.classList.add('hidden');
+  contenido.classList.remove('hidden');
+
+  const id = select.value;
+  const data = await cargarAlumno(id);
+  const nivel = nivelDe(data.total);
+
+  document.getElementById('nivel-emoji-nome').textContent = 'Nível atual';
+  document.getElementById('aluno-total').textContent = data.total + ' pts';
+  document.getElementById('badge-nivel').textContent = nivel.emoji + ' ' + nivel.nombre;
+
+  if(nivel.idx < NIVELES.length-1){
+    const faltan = NIVELES[nivel.idx].max - data.total + 1;
+    document.getElementById('proximo-nivel-txt').textContent = `Te faltan ${faltan} puntos para ${NIVELES[nivel.idx+1].emoji} ${NIVELES[nivel.idx+1].nombre}`;
+  } else {
+    document.getElementById('proximo-nivel-txt').textContent = '¡Llegaste al nivel máximo!';
+  }
+
+  dibujarTrilha(data.total);
+
+  const tbody = document.querySelector('#tabla-historico-aluno tbody');
+  tbody.innerHTML = '';
+  const historicoVacio = document.getElementById('historico-aluno-vacio');
+  if(data.history.length === 0){
+    historicoVacio.classList.remove('hidden');
+  } else {
+    historicoVacio.classList.add('hidden');
+    [...data.history].reverse().forEach(h=>{
+      const tr = document.createElement('tr');
+      tr.innerHTML = `<td>${h.date}</td><td>${h.action}</td><td style="text-align:right;color:var(--gold);">+${h.points}</td>`;
+      tbody.appendChild(tr);
+    });
+  }
+}
+
+async function renderProfessor(){
+  const selectProf = document.getElementById('select-aluno-prof');
+  const selectDeshacer = document.getElementById('select-aluno-deshacer');
+  poblarSelect(selectProf);
+  poblarSelect(selectDeshacer);
+
+  const grid = document.getElementById('grid-acciones');
+  grid.innerHTML = '';
+  ACCIONES.forEach(a=>{
+    const card = document.createElement('button');
+    card.className = 'accion-card';
+    card.innerHTML = `<span class="nome">${a.nombre}</span><span class="pts">+${a.puntos} pts</span>`;
+    card.onclick = ()=>sumarPuntos(selectProf.value, a.nombre, a.puntos);
+    grid.appendChild(card);
+  });
+
+  await renderRanking();
+}
+
+async function renderRanking(){
+  const lista = document.getElementById('ranking-lista');
+  const vacio = document.getElementById('ranking-vacio');
+  lista.innerHTML = '';
+  if(roster.length === 0){
+    vacio.classList.remove('hidden');
+    return;
+  }
+  vacio.classList.add('hidden');
+
+  const items = await Promise.all(roster.map(async s=>{
+    const data = await cargarAlumno(s.id);
+    return {...s, total: data.total};
+  }));
+  items.sort((a,b)=>b.total-a.total);
+
+  items.forEach(s=>{
+    const nivel = nivelDe(s.total);
+    const row = document.createElement('div');
+    row.className = 'roster-item';
+    row.innerHTML = `<span class="name">${nivel.emoji} ${s.name}</span><span class="pts">${s.total} pts · ${nivel.nombre}</span>`;
+    lista.appendChild(row);
+  });
+}
+
+async function sumarPuntos(id, accion, puntos){
+  if(!id || roster.length===0) return;
+  const data = cargarAlumno(id);
+  const nuevoTotal = data.total + puntos;
+  const nuevoHistorial = [...data.history, {date: fechaHoy(), action: accion, points: puntos}];
+  try{
+    await setDoc(doc(db, 'students', id), {total: nuevoTotal, history: nuevoHistorial});
+  }catch(e){
+    console.error('Error al sumar puntos', e);
+    alert('No se pudo guardar el punto. Revisa tu conexión.');
+  }
+}
+
+async function agregarAlumno(nombre){
+  nombre = nombre.trim();
+  if(!nombre) return;
+  try{
+    const nuevoDoc = await addDoc(collection(db, 'roster'), {name: nombre});
+    await setDoc(doc(db, 'students', nuevoDoc.id), {total:0, history:[]});
+  }catch(e){
+    console.error('Error al agregar alumno', e);
+    alert('No se pudo agregar al alumno. Revisa tu conexión.');
+  }
+}
+
+async function quitarUltimoPunto(id){
+  if(!id) return;
+  const data = cargarAlumno(id);
+  if(data.history.length === 0) return;
+  const historialNuevo = data.history.slice(0, -1);
+  const ultimo = data.history[data.history.length-1];
+  const totalNuevo = data.total - ultimo.points;
+  try{
+    await setDoc(doc(db, 'students', id), {total: totalNuevo, history: historialNuevo});
+  }catch(e){
+    console.error('Error al deshacer punto', e);
+    alert('No se pudo deshacer el punto. Revisa tu conexión.');
+  }
+}
+
+document.getElementById('btn-modo-aluno').onclick = async ()=>{
+  document.getElementById('btn-modo-aluno').classList.add('active');
+  document.getElementById('btn-modo-professor').classList.remove('active');
+  document.getElementById('vista-aluno').classList.remove('hidden');
+  document.getElementById('vista-professor').classList.add('hidden');
+  await renderAluno();
+};
+document.getElementById('btn-modo-professor').onclick = async ()=>{
+  document.getElementById('btn-modo-professor').classList.add('active');
+  document.getElementById('btn-modo-aluno').classList.remove('active');
+  document.getElementById('vista-professor').classList.remove('hidden');
+  document.getElementById('vista-aluno').classList.add('hidden');
+  if(profesorDesbloqueado){
+    document.getElementById('professor-lock').classList.add('hidden');
+    document.getElementById('professor-contenido').classList.remove('hidden');
+    await renderProfessor();
+  }
+};
+
+document.getElementById('btn-desbloquear').onclick = async ()=>{
+  const pin = document.getElementById('input-pin').value;
+  if(pin === TEACHER_PIN){
+    profesorDesbloqueado = true;
+    document.getElementById('professor-lock').classList.add('hidden');
+    document.getElementById('professor-contenido').classList.remove('hidden');
+    await renderProfessor();
+  } else {
+    alert('PIN incorrecto');
+  }
+};
+document.getElementById('btn-bloquear').onclick = ()=>{
+  profesorDesbloqueado = false;
+  document.getElementById('input-pin').value = '';
+  document.getElementById('professor-lock').classList.remove('hidden');
+  document.getElementById('professor-contenido').classList.add('hidden');
+};
+
+document.getElementById('btn-agregar-alumno').onclick = async ()=>{
+  const input = document.getElementById('input-nuevo-alumno');
+  await agregarAlumno(input.value);
+  input.value = '';
+};
+document.getElementById('input-nuevo-alumno').addEventListener('keydown', async (e)=>{
+  if(e.key === 'Enter'){
+    await agregarAlumno(e.target.value);
+    e.target.value = '';
+  }
+});
+
+document.getElementById('btn-accion-custom').onclick = async ()=>{
+  const nombre = document.getElementById('input-accion-custom').value.trim();
+  const puntos = parseInt(document.getElementById('input-puntos-custom').value, 10);
+  const id = document.getElementById('select-aluno-prof').value;
+  if(!nombre || isNaN(puntos)) return;
+  await sumarPuntos(id, nombre, puntos);
+  document.getElementById('input-accion-custom').value = '';
+  document.getElementById('input-puntos-custom').value = '';
+};
+
+document.getElementById('btn-deshacer').onclick = async ()=>{
+  const id = document.getElementById('select-aluno-deshacer').value;
+  await quitarUltimoPunto(id);
+};
+
+document.getElementById('select-aluno').addEventListener('change', renderAluno);
+document.getElementById('select-aluno-prof').addEventListener('change', ()=>{});
+
+(function init(){
+  renderAluno();
+})();
+</script>
+</body>
+</html>
