@@ -112,9 +112,9 @@
 
   <header class="top">
     <div>
-      <p class="eyebrow">=CORUJAS=</p>
+      <p class="eyebrow">Turma de português</p>
       <h1>Trilha do Português</h1>
-      <p class="sub">Cada tarefa te lleva un poco más lejos por Brasil. Suma puntos y sube de nivel.</p>
+      <p class="sub">Cada tarefa te lleva un poco más lejos por Brasil. Sumá puntos y subí de nivel.</p>
     </div>
     <div class="mode-toggle">
       <button id="btn-modo-aluno" class="active">Sou aluno</button>
@@ -217,7 +217,7 @@
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
 import {
-  getFirestore, collection, doc, addDoc, setDoc, onSnapshot
+  getFirestore, collection, doc, addDoc, setDoc, onSnapshot, deleteDoc
 } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
 
 // TODO: si algún día cambias de proyecto de Firebase, reemplaza esto por tu nuevo firebaseConfig
@@ -232,7 +232,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-const TEACHER_PIN = "1379";
+const TEACHER_PIN = "1234";
 let profesorDesbloqueado = false;
 
 const NIVELES = [
@@ -440,7 +440,14 @@ async function renderRanking(){
     const nivel = nivelDe(s.total);
     const row = document.createElement('div');
     row.className = 'roster-item';
-    row.innerHTML = `<span class="name">${nivel.emoji} ${s.name}</span><span class="pts">${s.total} pts · ${nivel.nombre}</span>`;
+    row.innerHTML = `<span class="name">${nivel.emoji} ${s.name}</span>
+      <span style="display:flex;align-items:center;gap:10px;">
+        <span class="pts">${s.total} pts · ${nivel.nombre}</span>
+        <button class="btn danger" style="padding:5px 10px;font-size:11px;" data-id="${s.id}" data-name="${s.name}">Eliminar</button>
+      </span>`;
+    row.querySelector('button').onclick = (e)=>{
+      eliminarAlumno(e.target.dataset.id, e.target.dataset.name);
+    };
     lista.appendChild(row);
   });
 }
@@ -482,6 +489,18 @@ async function quitarUltimoPunto(id){
   }catch(e){
     console.error('Error al deshacer punto', e);
     alert('No se pudo deshacer el punto. Revisa tu conexión.');
+  }
+}
+
+async function eliminarAlumno(id, nombre){
+  const confirmado = confirm(`¿Seguro que quieres eliminar a "${nombre}"? Se borrará todo su historial y no se puede deshacer.`);
+  if(!confirmado) return;
+  try{
+    await deleteDoc(doc(db, 'roster', id));
+    await deleteDoc(doc(db, 'students', id));
+  }catch(e){
+    console.error('Error al eliminar alumno', e);
+    alert('No se pudo eliminar al alumno. Revisa tu conexión.');
   }
 }
 
