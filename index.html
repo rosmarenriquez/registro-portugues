@@ -190,6 +190,13 @@
 
     <div id="aluno-contenido" class="hidden">
       <h2 id="saludo-aluno" style="margin:0 0 14px;font-size:24px;"></h2>
+      <div class="panel" id="panel-dicas" style="text-align:center;">
+  <p class="eyebrow" style="margin-bottom:12px;">💡 Dica de português</p>
+  <div style="min-height:54px;display:flex;align-items:center;justify-content:center;padding:0 10px;">
+    <p id="dica-texto" style="margin:0;font-size:15px;line-height:1.5;transition:opacity .35s ease;"></p>
+  </div>
+  <div style="display:flex;justify-content:center;gap:7px;margin-top:14px;" id="dica-dots"></div>
+</div>
       <div class="panel">
         <div class="flexbetween">
           <div>
@@ -373,6 +380,21 @@ const LOGROS = [
   {id:'missao_cumprida', emoji:'🏆', nombre:'Missão Cumprida', desc:'Completar a missão final', check:(d)=> d.history.some(h=>h.action==='Missão Final')},
   {id:'cem_pontos', emoji:'💯', nombre:'100 Pontos', desc:'Alcançar 100 pontos', check:(d)=> d.total >= 100},
 ];
+  const DICAS = [
+  "🎬 Assista séries ou filmes brasileiros com legendas em português — treina o ouvido e o vocabulário ao mesmo tempo.",
+  "🎵 Escute músicas em português e tente entender a letra antes de procurar a tradução.",
+  "🗣️ Fale em voz alta, mesmo sozinho. A prática oral é o que mais ajuda a ganhar confiança.",
+  "⚠️ Cuidado com os 'falsos amigos': 'rato' em português é o animal (mouse), não significa 'momento'.",
+  "📅 Estudar 10 minutos todos os dias rende mais do que 2 horas uma vez por semana.",
+  "✍️ Escreva pequenos textos sobre o seu dia em português, mesmo que tenha erros.",
+  "🇧🇷 O português do Brasil tem sons nasais (ã, õ) — preste atenção neles quando ouvir alguém falando.",
+  "❌ Não tenha medo de errar. Errar é parte natural de aprender qualquer idioma.",
+  "📖 Leia frases completas, não só palavras soltas — assim você aprende a entonação natural.",
+  "🔁 Revise o vocabulário da última aula antes de começar uma nova.",
+];
+let dicaIndex = 0;
+let dicaIntervalo = null;
+let carruselIniciado = false;
 
 let roster = [];           // [{id, name}]
 let studentsMap = {};      // { id: {total, history:[]} }
@@ -410,7 +432,35 @@ onSnapshot(collection(db, 'reportes'), (snapshot)=>{
   if(profesorDesbloqueado) renderReportes();
   refrescarUI();
 });
+function mostrarDica(i){
+  dicaIndex = ((i % DICAS.length) + DICAS.length) % DICAS.length;
+  const texto = document.getElementById('dica-texto');
+  if(!texto) return;
+  texto.style.opacity = '0';
+  setTimeout(()=>{
+    texto.textContent = DICAS[dicaIndex];
+    texto.style.opacity = '1';
+  }, 200);
+  const dots = document.getElementById('dica-dots');
+  if(dots){
+    dots.innerHTML = '';
+    DICAS.forEach((_, idx)=>{
+      const dot = document.createElement('span');
+      dot.style.width = '7px';
+      dot.style.height = '7px';
+      dot.style.borderRadius = '50%';
+      dot.style.cursor = 'pointer';
+      dot.style.background = idx === dicaIndex ? 'var(--gold)' : 'var(--line)';
+      dot.onclick = ()=>{ mostrarDica(idx); reiniciarCarrusel(); };
+      dots.appendChild(dot);
+    });
+  }
+}
 
+function reiniciarCarrusel(){
+  if(dicaIntervalo) clearInterval(dicaIntervalo);
+  dicaIntervalo = setInterval(()=> mostrarDica(dicaIndex + 1), 7000);
+}
 function nivelDe(total){
   for(let i=0;i<NIVELES.length;i++){
     if(total >= NIVELES[i].min && total <= NIVELES[i].max) return {idx:i, ...NIVELES[i]};
@@ -526,6 +576,12 @@ async function renderAluno(){
   }
   vacio.classList.add('hidden');
   contenido.classList.remove('hidden');
+
+  if(!carruselIniciado){
+    mostrarDica(Math.floor(Math.random()*DICAS.length));
+    reiniciarCarrusel();
+    carruselIniciado = true;
+  }
 
   const data = cargarAlumno(id);
   const nivel = nivelDe(data.total);
