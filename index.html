@@ -174,9 +174,8 @@
       <h1>Trilha do Português</h1>
       <p class="sub">Cada tarefa te lleva un poco más lejos por Brasil. Sumá puntos y subí de nivel.</p>
     </div>
-    <div class="mode-toggle" id="mode-toggle">
-      <button id="btn-modo-aluno" class="active">Sou aluno</button>
-      <button id="btn-modo-professor">Sou professor</button>
+    <div id="mode-toggle">
+      <button id="btn-modo-professor" class="btn secondary">🔒 Área do professor</button>
     </div>
   </header>
 
@@ -269,6 +268,9 @@
       <div class="panel">
         <p class="eyebrow">Registrar puntos</p>
         <select id="select-aluno-prof" style="margin-bottom:14px;"></select>
+        <div class="row" style="margin-bottom:14px;">
+          <button class="btn secondary" id="btn-ver-como-alumno">👀 Ver como alumno</button>
+        </div>
         <div class="acoes-grid" id="grid-acciones"></div>
         <div class="divider"></div>
         <p class="eyebrow">Acción personalizada</p>
@@ -775,16 +777,7 @@ function renderReportes(){
 }
 
 
-document.getElementById('btn-modo-aluno').onclick = async ()=>{
-  document.getElementById('btn-modo-aluno').classList.add('active');
-  document.getElementById('btn-modo-professor').classList.remove('active');
-  document.getElementById('vista-aluno').classList.remove('hidden');
-  document.getElementById('vista-professor').classList.add('hidden');
-  await renderAluno();
-};
 document.getElementById('btn-modo-professor').onclick = async ()=>{
-  document.getElementById('btn-modo-professor').classList.add('active');
-  document.getElementById('btn-modo-aluno').classList.remove('active');
   document.getElementById('vista-professor').classList.remove('hidden');
   document.getElementById('vista-aluno').classList.add('hidden');
   if(profesorDesbloqueado){
@@ -792,6 +785,13 @@ document.getElementById('btn-modo-professor').onclick = async ()=>{
     document.getElementById('professor-contenido').classList.remove('hidden');
     await renderProfessor();
   }
+};
+
+document.getElementById('btn-ver-como-alumno').onclick = ()=>{
+  const id = document.getElementById('select-aluno-prof').value;
+  if(!id) return;
+  const url = `${window.location.origin}${window.location.pathname}?alumno=${id}`;
+  window.open(url, '_blank');
 };
 
 document.getElementById('btn-desbloquear').onclick = async ()=>{
