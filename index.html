@@ -170,9 +170,9 @@
 
   <header class="top">
     <div>
-      <p class="eyebrow eyebrow-titulo">==CORUJAS==</p>
+      <p class="eyebrow eyebrow-titulo">Turma de português</p>
       <h1>Trilha do Português</h1>
-      <p class="sub">Cada tarefa te lleva un poco más lejos por Brasil. Suma puntos y sube de nivel.</p>
+      <p class="sub">Cada tarefa te lleva un poco más lejos por Brasil. Sumá puntos y subí de nivel.</p>
     </div>
     <div id="mode-toggle">
       <button id="btn-modo-professor" class="btn secondary">🔒 Área do professor</button>
@@ -238,6 +238,10 @@
         <div class="row" style="margin-top:8px;">
           <button class="btn secondary" id="btn-enviar-reporte">Enviar reporte</button>
         </div>
+        <div class="divider"></div>
+        <p class="eyebrow">Meus reportes</p>
+        <div id="mis-reportes-lista"></div>
+        <p class="empty hidden" id="mis-reportes-vacio">Todavía no enviaste ningún reporte.</p>
       </div>
 
     </div>
@@ -252,7 +256,7 @@
       <p>Solo el profesor puede agregar puntos y gestionar alumnos.</p>
       <input type="password" id="input-pin" placeholder="PIN">
       <div><button class="btn coral" id="btn-desbloquear">Entrar</button></div>
-      <p class="sub" style="margin-top:14px;">🌴 Só quem ensina português por aqui entra</p>
+      <p class="sub" style="margin-top:14px;">PIN por defecto: 1234</p>
     </div>
 
     <div id="professor-contenido" class="hidden">
@@ -338,7 +342,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-const TEACHER_PIN = "1379";
+const TEACHER_PIN = "1234";
 let profesorDesbloqueado = false;
 
 const params = new URLSearchParams(window.location.search);
@@ -404,6 +408,7 @@ let reportes = [];
 onSnapshot(collection(db, 'reportes'), (snapshot)=>{
   reportes = snapshot.docs.map(d => ({id: d.id, ...d.data()}));
   if(profesorDesbloqueado) renderReportes();
+  refrescarUI();
 });
 
 function nivelDe(total){
@@ -576,6 +581,23 @@ async function renderAluno(){
       const tr = document.createElement('tr');
       tr.innerHTML = `<td>${h.date}</td><td>${h.action}</td><td style="text-align:right;color:var(--gold);">+${h.points}</td>`;
       tbody.appendChild(tr);
+    });
+  }
+
+  const misReportesLista = document.getElementById('mis-reportes-lista');
+  const misReportesVacio = document.getElementById('mis-reportes-vacio');
+  misReportesLista.innerHTML = '';
+  const misReportes = reportes.filter(r => r.studentId === id).sort((a,b)=> (a.date < b.date ? 1 : -1));
+  if(misReportes.length === 0){
+    misReportesVacio.classList.remove('hidden');
+  } else {
+    misReportesVacio.classList.add('hidden');
+    misReportes.forEach(r=>{
+      const row = document.createElement('div');
+      row.className = 'roster-item';
+      row.innerHTML = `<span class="name" style="font-weight:400;font-size:13.5px;">${r.resuelto ? '✅' : '🔴'} ${r.message} <span style="color:var(--cream-dim);font-size:11px;">(${r.date})</span></span>
+        <span class="pts" style="color:${r.resuelto ? 'var(--teal-bright)' : 'var(--coral)'};">${r.resuelto ? 'Resuelto' : 'Pendiente'}</span>`;
+      misReportesLista.appendChild(row);
     });
   }
 }
