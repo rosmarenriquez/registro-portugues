@@ -38,6 +38,9 @@
     font-size:12px;letter-spacing:.14em;text-transform:uppercase;
     color:var(--teal-bright);margin:0 0 6px;
   }
+  .eyebrow-titulo{
+    font-size:16px;letter-spacing:.12em;margin-bottom:8px;
+  }
   header.top{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap;margin-bottom:28px;}
   header.top h1{font-size:32px;}
   .sub{color:var(--cream-dim);font-size:14px;margin-top:6px;max-width:420px;}
@@ -112,13 +115,13 @@
 
   <header class="top">
     <div>
-      <p class="eyebrow">==CORUJAS==</p>
+      <p class="eyebrow eyebrow-titulo">Turma de português</p>
       <h1>Trilha do Português</h1>
-      <p class="sub">Cada tarefa te lleva un poco más lejos por Brasil. Suma puntos y sube de nivel.</p>
+      <p class="sub">Cada tarefa te lleva un poco más lejos por Brasil. Sumá puntos y subí de nivel.</p>
     </div>
     <div class="mode-toggle" id="mode-toggle">
-      <button id="btn-modo-aluno" class="active">Aluno</button>
-      <button id="btn-modo-professor">Professor</button>
+      <button id="btn-modo-aluno" class="active">Sou aluno</button>
+      <button id="btn-modo-professor">Sou professor</button>
     </div>
   </header>
 
@@ -147,6 +150,16 @@
         <div class="trilha-wrap">
           <svg class="trilha" id="svg-trilha" viewBox="0 0 900 130" xmlns="http://www.w3.org/2000/svg"></svg>
         </div>
+      </div>
+
+      <div class="panel hidden" id="panel-nota-profesor">
+        <p class="eyebrow">💌 Mensagem do professor</p>
+        <p class="sub" id="nota-profesor-texto" style="font-size:14.5px;color:var(--cream);"></p>
+      </div>
+
+      <div class="panel">
+        <p class="eyebrow">Logros</p>
+        <div class="acoes-grid" id="logros-grid"></div>
       </div>
 
       <div class="panel">
@@ -192,6 +205,13 @@
           <input type="text" id="input-accion-custom" placeholder="Nombre de la acción" style="flex:2;min-width:140px;">
           <input type="number" id="input-puntos-custom" placeholder="Puntos" style="flex:1;min-width:80px;">
           <button class="btn secondary" id="btn-accion-custom">Sumar</button>
+        </div>
+        <div class="divider"></div>
+        <p class="eyebrow">Mensagem para o aluno</p>
+        <p class="sub" style="margin:0 0 8px;">Este mensaje lo verá solo el alumno seleccionado arriba.</p>
+        <textarea id="input-nota-profesor" rows="3" placeholder="Ej: ¡Excelente progreso esta semana! Sigue practicando la conjugación de verbos." style="width:100%;background:var(--teal-dark);border:1px solid var(--line);color:var(--cream);font-family:'Inter',sans-serif;font-size:14px;padding:10px 12px;border-radius:10px;outline:none;resize:vertical;"></textarea>
+        <div class="row" style="margin-top:8px;">
+          <button class="btn coral" id="btn-guardar-nota">Guardar mensaje</button>
         </div>
       </div>
 
@@ -255,9 +275,16 @@ const NIVELES = [
 const ACCIONES = [
   {nombre:"Assistência", puntos:5},
   {nombre:"Participação", puntos:3},
-  {nombre:"Tarefa", puntos:5},
   {nombre:"Desafio", puntos:10},
   {nombre:"Missão Final", puntos:20},
+];
+
+const LOGROS = [
+  {id:'primeiro_desafio', emoji:'🎯', nombre:'Primeiro Desafio', desc:'Completar 1 desafio', check:(d)=> d.history.filter(h=>h.action==='Desafio').length >= 1},
+  {id:'aluno_constante', emoji:'📈', nombre:'Aluno Constante', desc:'5 assistências registradas', check:(d)=> d.history.filter(h=>h.action==='Assistência').length >= 5},
+  {id:'voz_ativa', emoji:'💬', nombre:'Voz Ativa', desc:'5 participações registradas', check:(d)=> d.history.filter(h=>h.action==='Participação').length >= 5},
+  {id:'missao_cumprida', emoji:'🏆', nombre:'Missão Cumprida', desc:'Completar a missão final', check:(d)=> d.history.some(h=>h.action==='Missão Final')},
+  {id:'cem_pontos', emoji:'💯', nombre:'100 Pontos', desc:'Alcançar 100 pontos', check:(d)=> d.total >= 100},
 ];
 
 let roster = [];           // [{id, name}]
@@ -266,7 +293,7 @@ let listaLista = false;    // true cuando ya llegó la primera respuesta de Fire
 
 function cargarAlumno(id){
   // Ya no se pide a Firestore: los datos llegan solos vía onSnapshot y viven en studentsMap
-  return studentsMap[id] || {total:0, history:[]};
+  return studentsMap[id] || {total:0, history:[], note:''};
 }
 
 function refrescarUI(){
@@ -420,6 +447,27 @@ async function renderAluno(){
 
   dibujarTrilha(data.total);
 
+  const panelNota = document.getElementById('panel-nota-profesor');
+  if(data.note && data.note.trim() !== ''){
+    document.getElementById('nota-profesor-texto').textContent = data.note;
+    panelNota.classList.remove('hidden');
+  } else {
+    panelNota.classList.add('hidden');
+  }
+
+  const gridLogros = document.getElementById('logros-grid');
+  gridLogros.innerHTML = '';
+  LOGROS.forEach(l=>{
+    const conseguido = l.check(data);
+    const card = document.createElement('div');
+    card.className = 'accion-card';
+    card.style.cursor = 'default';
+    card.style.opacity = conseguido ? '1' : '0.4';
+    card.style.borderColor = conseguido ? 'var(--gold)' : '';
+    card.innerHTML = `<span class="nome">${l.emoji} ${l.nombre}</span><span class="pts" style="color:${conseguido?'var(--gold)':'var(--cream-dim)'};font-size:11.5px;">${l.desc}</span>`;
+    gridLogros.appendChild(card);
+  });
+
   const tbody = document.querySelector('#tabla-historico-aluno tbody');
   tbody.innerHTML = '';
   const historicoVacio = document.getElementById('historico-aluno-vacio');
@@ -434,6 +482,8 @@ async function renderAluno(){
     });
   }
 }
+
+let ultimoAlumnoNotaMostrado = null;
 
 async function renderProfessor(){
   const selectProf = document.getElementById('select-aluno-prof');
@@ -450,6 +500,12 @@ async function renderProfessor(){
     card.onclick = ()=>sumarPuntos(selectProf.value, a.nombre, a.puntos);
     grid.appendChild(card);
   });
+
+  if(selectProf.value !== ultimoAlumnoNotaMostrado){
+    const data = cargarAlumno(selectProf.value);
+    document.getElementById('input-nota-profesor').value = data.note || '';
+    ultimoAlumnoNotaMostrado = selectProf.value;
+  }
 
   await renderRanking();
 }
@@ -502,7 +558,7 @@ async function sumarPuntos(id, accion, puntos){
   const nuevoTotal = data.total + puntos;
   const nuevoHistorial = [...data.history, {date: fechaHoy(), action: accion, points: puntos}];
   try{
-    await setDoc(doc(db, 'students', id), {total: nuevoTotal, history: nuevoHistorial});
+    await setDoc(doc(db, 'students', id), {total: nuevoTotal, history: nuevoHistorial}, {merge:true});
   }catch(e){
     console.error('Error al sumar puntos', e);
     alert('No se pudo guardar el punto. Revisa tu conexión.');
@@ -514,7 +570,7 @@ async function agregarAlumno(nombre){
   if(!nombre) return;
   try{
     const nuevoDoc = await addDoc(collection(db, 'roster'), {name: nombre});
-    await setDoc(doc(db, 'students', nuevoDoc.id), {total:0, history:[]});
+    await setDoc(doc(db, 'students', nuevoDoc.id), {total:0, history:[], note:''}, {merge:true});
   }catch(e){
     console.error('Error al agregar alumno', e);
     alert('No se pudo agregar al alumno. Revisa tu conexión.');
@@ -529,10 +585,20 @@ async function quitarUltimoPunto(id){
   const ultimo = data.history[data.history.length-1];
   const totalNuevo = data.total - ultimo.points;
   try{
-    await setDoc(doc(db, 'students', id), {total: totalNuevo, history: historialNuevo});
+    await setDoc(doc(db, 'students', id), {total: totalNuevo, history: historialNuevo}, {merge:true});
   }catch(e){
     console.error('Error al deshacer punto', e);
     alert('No se pudo deshacer el punto. Revisa tu conexión.');
+  }
+}
+
+async function guardarNota(id, texto){
+  if(!id) return;
+  try{
+    await setDoc(doc(db, 'students', id), {note: texto}, {merge:true});
+  }catch(e){
+    console.error('Error al guardar la nota', e);
+    alert('No se pudo guardar el mensaje. Revisa tu conexión.');
   }
 }
 
@@ -612,8 +678,21 @@ document.getElementById('btn-deshacer').onclick = async ()=>{
   await quitarUltimoPunto(id);
 };
 
+document.getElementById('btn-guardar-nota').onclick = async ()=>{
+  const id = document.getElementById('select-aluno-prof').value;
+  const texto = document.getElementById('input-nota-profesor').value;
+  const btn = document.getElementById('btn-guardar-nota');
+  await guardarNota(id, texto);
+  btn.textContent = '¡Guardado!';
+  setTimeout(()=>{ btn.textContent = 'Guardar mensaje'; }, 1500);
+};
+
 document.getElementById('select-aluno').addEventListener('change', renderAluno);
-document.getElementById('select-aluno-prof').addEventListener('change', ()=>{});
+document.getElementById('select-aluno-prof').addEventListener('change', (e)=>{
+  const data = cargarAlumno(e.target.value);
+  document.getElementById('input-nota-profesor').value = data.note || '';
+  ultimoAlumnoNotaMostrado = e.target.value;
+});
 
 (function init(){
   renderAluno();
