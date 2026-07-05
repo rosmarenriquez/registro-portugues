@@ -190,6 +190,7 @@
     <div id="aluno-vazio" class="panel empty hidden">Todavía no hay alumnos cargados. Pídele a tu profesor que te agregue en el modo Professor.</div>
 
     <div id="aluno-contenido" class="hidden">
+      <h2 id="saludo-aluno" style="margin:0 0 14px;font-size:24px;"></h2>
       <div class="panel">
         <div class="flexbetween">
           <div>
@@ -521,7 +522,9 @@ async function renderAluno(){
 
   const data = cargarAlumno(id);
   const nivel = nivelDe(data.total);
+  const alumno = roster.find(s => s.id === id);
 
+  document.getElementById('saludo-aluno').textContent = `Olá, ${alumno ? alumno.name : ''}! 👋`;
   document.getElementById('nivel-emoji-nome').textContent = 'Nível atual';
   document.getElementById('aluno-total').textContent = data.total + ' pts';
   document.getElementById('badge-nivel').textContent = nivel.emoji + ' ' + nivel.nombre;
