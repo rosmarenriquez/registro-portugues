@@ -30,8 +30,11 @@
     color:var(--cream);
     font-family:'Inter',sans-serif;
     min-height:100vh;
+    position:relative;
   }
-  .wrap{max-width:920px;margin:0 auto;padding:32px 20px 80px;}
+  .bg-escena{position:fixed;inset:0;z-index:0;overflow:hidden;}
+  .bg-escena svg{width:100%;height:100%;display:block;}
+  .wrap{max-width:920px;margin:0 auto;padding:32px 20px 80px;position:relative;z-index:1;}
   h1,h2,h3{font-family:'Baloo 2',sans-serif;font-weight:700;margin:0;color:var(--cream);}
   .eyebrow{
     font-family:'Space Mono',monospace;
@@ -111,6 +114,58 @@
 </style>
 </head>
 <body>
+<div class="bg-escena">
+  <svg viewBox="0 0 1200 800" preserveAspectRatio="xMidYMax slice" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="ceuGrad" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#0E3B3A"/>
+        <stop offset="50%" stop-color="#123F3E"/>
+        <stop offset="76%" stop-color="#6E4A2A"/>
+        <stop offset="100%" stop-color="#E4572E" stop-opacity="0.55"/>
+      </linearGradient>
+      <radialGradient id="solGrad" cx="50%" cy="50%" r="50%">
+        <stop offset="0%" stop-color="#F4B740" stop-opacity="0.85"/>
+        <stop offset="100%" stop-color="#F4B740" stop-opacity="0"/>
+      </radialGradient>
+    </defs>
+    <rect x="0" y="0" width="1200" height="800" fill="url(#ceuGrad)"/>
+
+    <circle cx="640" cy="555" r="190" fill="url(#solGrad)"/>
+    <circle cx="640" cy="555" r="68" fill="#F4B740" opacity="0.9"/>
+
+    <path d="M140,150 q10,-13 20,0 q10,-13 20,0" stroke="#F5E9D3" stroke-opacity="0.3" stroke-width="3" fill="none" stroke-linecap="round"/>
+    <path d="M980,190 q9,-12 18,0 q9,-12 18,0" stroke="#F5E9D3" stroke-opacity="0.25" stroke-width="3" fill="none" stroke-linecap="round"/>
+
+    <!-- Montanhas suaves -->
+    <path d="M0,640 Q200,555 400,610 T800,590 T1200,630 V800 H0 Z" fill="#0B2E2C" opacity="0.6"/>
+    <path d="M280,650 Q380,540 470,650 Z" fill="#0A2624"/>
+    <path d="M760,650 Q850,510 940,650 Z" fill="#0A2624"/>
+
+    <!-- Tucano en un galho -->
+    <g transform="translate(870,300)">
+      <path d="M0,40 Q40,10 100,20" stroke="#0A2624" stroke-width="5" fill="none" stroke-linecap="round" opacity="0.85"/>
+      <ellipse cx="40" cy="45" rx="22" ry="26" fill="#0A2624" opacity="0.85"/>
+      <circle cx="34" cy="20" r="14" fill="#0A2624" opacity="0.85"/>
+      <path d="M22,16 Q-14,10 -10,26 Q10,28 24,24 Z" fill="#F4B740" opacity="0.85"/>
+      <path d="M18,58 q-6,16 -2,26" stroke="#0A2624" stroke-width="5" fill="none" stroke-linecap="round" opacity="0.85"/>
+    </g>
+
+    <!-- Colinas cercanas -->
+    <path d="M0,705 Q300,662 600,702 T1200,690 V800 H0 Z" fill="#081F1D"/>
+
+    <!-- Ondas do mar -->
+    <path d="M0,760 Q60,750 120,760 T240,760 T360,760 T480,760 T600,760 T720,760 T840,760 T960,760 T1080,760 T1200,760" stroke="#F5E9D3" stroke-opacity="0.12" stroke-width="4" fill="none"/>
+
+    <!-- Palmeiras -->
+    <g fill="#081F1D">
+      <path d="M55,705 C35,662 90,650 90,705 C112,652 145,672 100,705 Z"/>
+      <rect x="87" y="705" width="6" height="55"/>
+      <path d="M1080,708 C1062,668 1112,657 1112,708 C1132,660 1162,678 1120,708 Z"/>
+      <rect x="1108" y="708" width="6" height="50"/>
+    </g>
+  </svg>
+</div>
+
 <div class="wrap">
 
   <header class="top">
@@ -170,6 +225,21 @@
         </table>
         <p class="empty hidden" id="historico-aluno-vacio">Todavía no tienes puntos registrados. ¡A por el primero!</p>
       </div>
+      <div class="panel" style="background:linear-gradient(135deg, var(--bg-panel-2), var(--bg-panel));border-color:var(--gold);">
+        <p class="eyebrow">📚 Material de estudo</p>
+        <p class="sub" style="margin:0 0 14px;">Textos, ejercicios y recursos extra para practicar tu português.</p>
+        <a href="https://sites.google.com/view/portugusbr/inicio" target="_blank" rel="noopener" class="btn coral" style="display:inline-block;text-decoration:none;">Abrir material →</a>
+      </div>
+
+      <div class="panel">
+        <p class="eyebrow">🛠️ Reportar un problema</p>
+        <p class="sub" style="margin:0 0 8px;">¿Algo no funciona bien o no se ve como debería? Cuéntame acá.</p>
+        <textarea id="input-reporte" rows="3" placeholder="Ej: No se ve mi historial de puntos." style="width:100%;background:var(--teal-dark);border:1px solid var(--line);color:var(--cream);font-family:'Inter',sans-serif;font-size:14px;padding:10px 12px;border-radius:10px;outline:none;resize:vertical;"></textarea>
+        <div class="row" style="margin-top:8px;">
+          <button class="btn secondary" id="btn-enviar-reporte">Enviar reporte</button>
+        </div>
+      </div>
+
     </div>
   </div>
 
@@ -232,9 +302,19 @@
         </div>
       </div>
 
+      <div class="panel">
+        <p class="eyebrow">🛠️ Reportes de alumnos</p>
+        <div id="reportes-lista"></div>
+        <p class="empty hidden" id="reportes-vacio">No hay reportes pendientes. 🎉</p>
+      </div>
+
     </div>
   </div>
 
+  <footer style="text-align:center;margin-top:40px;opacity:0.7;">
+    <p style="font-family:'Baloo 2',sans-serif;font-size:15px;color:var(--gold);margin:0;letter-spacing:.03em;">Português com Ros</p>
+    <p style="font-size:11.5px;color:var(--cream-dim);margin:4px 0 0;">Feito com carinho para minha turma 🌴</p>
+  </footer>
 </div>
 
 <script type="module">
@@ -314,6 +394,13 @@ onSnapshot(collection(db, 'students'), (snapshot)=>{
   studentsMap = {};
   snapshot.docs.forEach(d => { studentsMap[d.id] = d.data(); });
   refrescarUI();
+});
+
+let reportes = [];
+// Escucha en tiempo real los reportes de problemas
+onSnapshot(collection(db, 'reportes'), (snapshot)=>{
+  reportes = snapshot.docs.map(d => ({id: d.id, ...d.data()}));
+  if(profesorDesbloqueado) renderReportes();
 });
 
 function nivelDe(total){
@@ -508,6 +595,7 @@ async function renderProfessor(){
   }
 
   await renderRanking();
+  renderReportes();
 }
 
 async function renderRanking(){
@@ -614,6 +702,71 @@ async function eliminarAlumno(id, nombre){
   }
 }
 
+async function enviarReporte(studentId, studentName, mensaje){
+  mensaje = mensaje.trim();
+  if(!mensaje) return;
+  try{
+    await addDoc(collection(db, 'reportes'), {
+      studentId: studentId || null,
+      studentName: studentName || 'Alumno',
+      message: mensaje,
+      date: fechaHoy(),
+      resuelto: false
+    });
+  }catch(e){
+    console.error('Error al enviar el reporte', e);
+    alert('No se pudo enviar el reporte. Revisa tu conexión.');
+  }
+}
+
+async function marcarReporteResuelto(id){
+  try{ await setDoc(doc(db, 'reportes', id), {resuelto:true}, {merge:true}); }
+  catch(e){ console.error('Error al marcar reporte', e); }
+}
+
+async function eliminarReporte(id){
+  try{ await deleteDoc(doc(db, 'reportes', id)); }
+  catch(e){ console.error('Error al eliminar reporte', e); }
+}
+
+function renderReportes(){
+  const lista = document.getElementById('reportes-lista');
+  const vacio = document.getElementById('reportes-vacio');
+  lista.innerHTML = '';
+  const pendientes = reportes.filter(r => !r.resuelto).sort((a,b)=> (a.date < b.date ? 1 : -1));
+  const resueltos = reportes.filter(r => r.resuelto);
+
+  if(pendientes.length === 0 && resueltos.length === 0){
+    vacio.classList.remove('hidden');
+    return;
+  }
+  vacio.classList.add('hidden');
+
+  pendientes.forEach(r=>{
+    const row = document.createElement('div');
+    row.className = 'roster-item';
+    row.innerHTML = `<span class="name" style="font-weight:500;">🔴 <b>${r.studentName}</b> — ${r.message} <span style="color:var(--cream-dim);font-size:11px;">(${r.date})</span></span>
+      <span style="display:flex;gap:8px;">
+        <button class="btn secondary" style="padding:5px 10px;font-size:11px;" data-resolver="${r.id}">Resuelto</button>
+        <button class="btn danger" style="padding:5px 10px;font-size:11px;" data-borrar="${r.id}">Eliminar</button>
+      </span>`;
+    row.querySelector('[data-resolver]').onclick = (e)=> marcarReporteResuelto(e.target.dataset.resolver);
+    row.querySelector('[data-borrar]').onclick = (e)=> eliminarReporte(e.target.dataset.borrar);
+    lista.appendChild(row);
+  });
+
+  resueltos.forEach(r=>{
+    const row = document.createElement('div');
+    row.className = 'roster-item';
+    row.style.opacity = '0.5';
+    row.innerHTML = `<span class="name" style="font-weight:400;">✅ ${r.studentName} — ${r.message}</span>
+      <button class="btn danger" style="padding:5px 10px;font-size:11px;" data-borrar="${r.id}">Eliminar</button>`;
+    row.querySelector('[data-borrar]').onclick = (e)=> eliminarReporte(e.target.dataset.borrar);
+    lista.appendChild(row);
+  });
+}
+
+
 document.getElementById('btn-modo-aluno').onclick = async ()=>{
   document.getElementById('btn-modo-aluno').classList.add('active');
   document.getElementById('btn-modo-professor').classList.remove('active');
@@ -685,6 +838,19 @@ document.getElementById('btn-guardar-nota').onclick = async ()=>{
   await guardarNota(id, texto);
   btn.textContent = '¡Guardado!';
   setTimeout(()=>{ btn.textContent = 'Guardar mensaje'; }, 1500);
+};
+
+document.getElementById('btn-enviar-reporte').onclick = async ()=>{
+  const textarea = document.getElementById('input-reporte');
+  const btn = document.getElementById('btn-enviar-reporte');
+  const select = document.getElementById('select-aluno');
+  const id = alumnoFijo || select.value;
+  const alumno = roster.find(s => s.id === id);
+  if(!textarea.value.trim()) return;
+  await enviarReporte(id, alumno ? alumno.name : 'Alumno', textarea.value);
+  textarea.value = '';
+  btn.textContent = '¡Enviado!';
+  setTimeout(()=>{ btn.textContent = 'Enviar reporte'; }, 1500);
 };
 
 document.getElementById('select-aluno').addEventListener('change', renderAluno);
