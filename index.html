@@ -172,7 +172,7 @@
     <div>
       <p class="eyebrow eyebrow-titulo">Turma de português</p>
       <h1>Trilha do Português</h1>
-      <p class="sub">Cada tarefa te lleva un poco más lejos por Brasil. Suma puntos y sube de nivel.</p>
+      <p class="sub">Cada tarefa te lleva un poco más lejos por Brasil. Sumá puntos y subí de nivel.</p>
     </div>
     <div id="mode-toggle">
       <button id="btn-modo-professor" class="btn secondary">🔒 Área do professor</button>
@@ -198,10 +198,13 @@
 
       <div class="panel" id="panel-dicas" style="text-align:center;">
         <p class="eyebrow" style="margin-bottom:12px;">💡 Dica de português</p>
-        <div style="min-height:54px;display:flex;align-items:center;justify-content:center;padding:0 10px;">
-          <p id="dica-texto" style="margin:0;font-size:15px;line-height:1.5;transition:opacity .35s ease;"></p>
+        <div style="display:flex;align-items:center;gap:10px;">
+          <button id="dica-prev" aria-label="Dica anterior" style="flex-shrink:0;background:var(--teal-dark);border:1px solid var(--line);color:var(--cream);width:34px;height:34px;border-radius:50%;cursor:pointer;font-size:15px;display:flex;align-items:center;justify-content:center;">◀</button>
+          <div style="min-height:54px;flex:1;display:flex;align-items:center;justify-content:center;padding:0 4px;">
+            <p id="dica-texto" style="margin:0;font-size:15px;line-height:1.5;transition:opacity .35s ease;"></p>
+          </div>
+          <button id="dica-next" aria-label="Próxima dica" style="flex-shrink:0;background:var(--teal-dark);border:1px solid var(--line);color:var(--cream);width:34px;height:34px;border-radius:50%;cursor:pointer;font-size:15px;display:flex;align-items:center;justify-content:center;">▶</button>
         </div>
-        <div style="display:flex;justify-content:center;gap:7px;margin-top:14px;" id="dica-dots"></div>
       </div>
       <div class="panel">
         <div class="flexbetween">
@@ -275,7 +278,7 @@
       <p>Solo el profesor puede agregar puntos y gestionar alumnos.</p>
       <input type="password" id="input-pin" placeholder="PIN">
       <div><button class="btn coral" id="btn-desbloquear">Entrar</button></div>
-      <p class="sub" style="margin-top:14px;">🌴 Só quem ensina português por aqui entra</p>
+      <p class="sub" style="margin-top:14px;">PIN por defecto: 1234</p>
     </div>
 
     <div id="professor-contenido" class="hidden">
@@ -373,7 +376,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-const TEACHER_PIN = "1379";
+const TEACHER_PIN = "1234";
 let profesorDesbloqueado = false;
 
 const params = new URLSearchParams(window.location.search);
@@ -491,20 +494,6 @@ function mostrarDica(i){
     texto.textContent = DICAS[dicaIndex];
     texto.style.opacity = '1';
   }, 200);
-  const dots = document.getElementById('dica-dots');
-  if(dots){
-    dots.innerHTML = '';
-    DICAS.forEach((_, idx)=>{
-      const dot = document.createElement('span');
-      dot.style.width = '7px';
-      dot.style.height = '7px';
-      dot.style.borderRadius = '50%';
-      dot.style.cursor = 'pointer';
-      dot.style.background = idx === dicaIndex ? 'var(--gold)' : 'var(--line)';
-      dot.onclick = ()=>{ mostrarDica(idx); reiniciarCarrusel(); };
-      dots.appendChild(dot);
-    });
-  }
 }
 
 function reiniciarCarrusel(){
@@ -923,6 +912,15 @@ document.getElementById('btn-modo-professor').onclick = async ()=>{
     document.getElementById('professor-contenido').classList.remove('hidden');
     await renderProfessor();
   }
+};
+
+document.getElementById('dica-prev').onclick = ()=>{
+  mostrarDica(dicaIndex - 1);
+  reiniciarCarrusel();
+};
+document.getElementById('dica-next').onclick = ()=>{
+  mostrarDica(dicaIndex + 1);
+  reiniciarCarrusel();
 };
 
 document.getElementById('btn-guardar-aviso-pago').onclick = async ()=>{
