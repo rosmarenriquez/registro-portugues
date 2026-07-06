@@ -170,9 +170,9 @@
 
   <header class="top">
     <div>
-      <p class="eyebrow eyebrow-titulo">==CORUJAS==</p>
+      <p class="eyebrow eyebrow-titulo">Turma de português</p>
       <h1>Trilha do Português</h1>
-      <p class="sub">Cada tarefa te lleva un poco más lejos por Brasil. Suma puntos y sube de nivel.</p>
+      <p class="sub">Cada tarefa te lleva un poco más lejos por Brasil. Sumá puntos y subí de nivel.</p>
     </div>
     <div id="mode-toggle">
       <button id="btn-modo-professor" class="btn secondary">🔒 Área do professor</button>
@@ -190,17 +190,19 @@
 
     <div id="aluno-contenido" class="hidden">
       <h2 id="saludo-aluno" style="margin:0 0 14px;font-size:24px;"></h2>
+
       <div class="panel hidden" id="panel-aviso-pago" style="border-color:var(--coral);background:linear-gradient(135deg, rgba(255,107,74,0.18), var(--bg-panel));">
-  <p class="eyebrow" style="color:var(--coral);">💰 Aviso</p>
-  <p id="aviso-pago-texto" style="margin:0;font-size:14.5px;"></p>
-</div>
+        <p class="eyebrow" style="color:var(--coral);">💰 Aviso</p>
+        <p id="aviso-pago-texto" style="margin:0;font-size:14.5px;"></p>
+      </div>
+
       <div class="panel" id="panel-dicas" style="text-align:center;">
-  <p class="eyebrow" style="margin-bottom:12px;">💡 Dica de português</p>
-  <div style="min-height:54px;display:flex;align-items:center;justify-content:center;padding:0 10px;">
-    <p id="dica-texto" style="margin:0;font-size:15px;line-height:1.5;transition:opacity .35s ease;"></p>
-  </div>
-  <div style="display:flex;justify-content:center;gap:7px;margin-top:14px;" id="dica-dots"></div>
-</div>
+        <p class="eyebrow" style="margin-bottom:12px;">💡 Dica de português</p>
+        <div style="min-height:54px;display:flex;align-items:center;justify-content:center;padding:0 10px;">
+          <p id="dica-texto" style="margin:0;font-size:15px;line-height:1.5;transition:opacity .35s ease;"></p>
+        </div>
+        <div style="display:flex;justify-content:center;gap:7px;margin-top:14px;" id="dica-dots"></div>
+      </div>
       <div class="panel">
         <div class="flexbetween">
           <div>
@@ -241,11 +243,12 @@
         <p class="sub" style="margin:0 0 14px;">Textos, ejercicios y recursos extra para practicar tu português.</p>
         <a href="https://sites.google.com/view/portugusbr/inicio" target="_blank" rel="noopener" class="btn coral" style="display:inline-block;text-decoration:none;">Abrir material →</a>
       </div>
+
       <div class="panel" style="background:linear-gradient(135deg, var(--bg-panel-2), var(--bg-panel));border-color:var(--teal-bright);">
-  <p class="eyebrow">🗂️ Nosso Trello</p>
-  <p class="sub" style="margin:0 0 14px;">Semanas, desafios e todo o cronograma do curso.</p>
-  <a href="https://trello.com/b/NHaybQAs" target="_blank" rel="noopener" class="btn secondary" style="display:inline-block;text-decoration:none;">Abrir Trello →</a>
-</div>
+        <p class="eyebrow">🗂️ Nosso Trello</p>
+        <p class="sub" style="margin:0 0 14px;">Semanas, desafios e todo o cronograma do curso.</p>
+        <a href="https://trello.com/b/NHaybQAs" target="_blank" rel="noopener" class="btn secondary" style="display:inline-block;text-decoration:none;">Abrir Trello →</a>
+      </div>
 
       <div class="panel">
         <p class="eyebrow">🛠️ Reportar un problema</p>
@@ -272,7 +275,7 @@
       <p>Solo el profesor puede agregar puntos y gestionar alumnos.</p>
       <input type="password" id="input-pin" placeholder="PIN">
       <div><button class="btn coral" id="btn-desbloquear">Entrar</button></div>
-      <p class="sub" style="margin-top:14px;">🌴 Só quem ensina português por aqui entra</p>
+      <p class="sub" style="margin-top:14px;">PIN por defecto: 1234</p>
     </div>
 
     <div id="professor-contenido" class="hidden">
@@ -316,17 +319,18 @@
         <div id="ranking-lista"></div>
         <p class="empty hidden" id="ranking-vacio">Agrega alumnos para ver el ranking.</p>
       </div>
+
       <div class="panel">
-  <div class="flexbetween">
-    <p class="eyebrow" style="margin:0;">💰 Aviso de pagamento</p>
-    <button class="btn secondary" id="btn-toggle-aviso-pago">Activar</button>
-  </div>
-  <p class="sub" style="margin:8px 0;">Este mensaje se muestra a todos los alumnos cuando está activado.</p>
-  <textarea id="input-aviso-pago" rows="2" placeholder="Ej: Recuerda hacer tu pago de esta semana 💰" style="width:100%;background:var(--teal-dark);border:1px solid var(--line);color:var(--cream);font-family:'Inter',sans-serif;font-size:14px;padding:10px 12px;border-radius:10px;outline:none;resize:vertical;"></textarea>
-  <div class="row" style="margin-top:8px;">
-    <button class="btn coral" id="btn-guardar-aviso-pago">Guardar mensaje</button>
-  </div>
-</div>
+        <div class="flexbetween">
+          <p class="eyebrow" style="margin:0;">💰 Aviso de pagamento</p>
+          <button class="btn secondary" id="btn-toggle-aviso-pago">Activar</button>
+        </div>
+        <p class="sub" style="margin:8px 0;">Este mensaje se muestra a todos los alumnos cuando está activado.</p>
+        <textarea id="input-aviso-pago" rows="2" placeholder="Ej: Recuerda hacer tu pago de esta semana 💰" style="width:100%;background:var(--teal-dark);border:1px solid var(--line);color:var(--cream);font-family:'Inter',sans-serif;font-size:14px;padding:10px 12px;border-radius:10px;outline:none;resize:vertical;"></textarea>
+        <div class="row" style="margin-top:8px;">
+          <button class="btn coral" id="btn-guardar-aviso-pago">Guardar mensaje</button>
+        </div>
+      </div>
 
       <div class="panel">
         <p class="eyebrow">Deshacer último registro</p>
@@ -369,7 +373,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-const TEACHER_PIN = "1379";
+const TEACHER_PIN = "1234";
 let profesorDesbloqueado = false;
 
 const params = new URLSearchParams(window.location.search);
@@ -400,7 +404,8 @@ const LOGROS = [
   {id:'missao_cumprida', emoji:'🏆', nombre:'Missão Cumprida', desc:'Completar a missão final', check:(d)=> d.history.some(h=>h.action==='Missão Final')},
   {id:'cem_pontos', emoji:'💯', nombre:'100 Pontos', desc:'Alcançar 100 pontos', check:(d)=> d.total >= 100},
 ];
-  const DICAS = [
+
+const DICAS = [
   "🎬 Assista séries ou filmes brasileiros com legendas em português — treina o ouvido e o vocabulário ao mesmo tempo.",
   "🎵 Escute músicas em português e tente entender a letra antes de procurar a tradução.",
   "🗣️ Fale em voz alta, mesmo sozinho. A prática oral é o que mais ajuda a ganhar confiança.",
@@ -415,7 +420,8 @@ const LOGROS = [
 let dicaIndex = 0;
 let dicaIntervalo = null;
 let carruselIniciado = false;
-  let avisoPago = {activo:false, texto:''};
+
+let avisoPago = {activo:false, texto:''};
 onSnapshot(doc(db, 'config', 'general'), (snap)=>{
   avisoPago = snap.exists() ? snap.data() : {activo:false, texto:''};
   refrescarUI();
@@ -437,6 +443,7 @@ function actualizarControlAvisoPago(){
     textarea.value = avisoPago.texto || '';
   }
 }
+
 
 let roster = [];           // [{id, name}]
 let studentsMap = {};      // { id: {total, history:[]} }
@@ -474,6 +481,7 @@ onSnapshot(collection(db, 'reportes'), (snapshot)=>{
   if(profesorDesbloqueado) renderReportes();
   refrescarUI();
 });
+
 function mostrarDica(i){
   dicaIndex = ((i % DICAS.length) + DICAS.length) % DICAS.length;
   const texto = document.getElementById('dica-texto');
@@ -503,6 +511,7 @@ function reiniciarCarrusel(){
   if(dicaIntervalo) clearInterval(dicaIntervalo);
   dicaIntervalo = setInterval(()=> mostrarDica(dicaIndex + 1), 7000);
 }
+
 function nivelDe(total){
   for(let i=0;i<NIVELES.length;i++){
     if(total >= NIVELES[i].min && total <= NIVELES[i].max) return {idx:i, ...NIVELES[i]};
@@ -618,6 +627,7 @@ async function renderAluno(){
   }
   vacio.classList.add('hidden');
   contenido.classList.remove('hidden');
+
   const panelAviso = document.getElementById('panel-aviso-pago');
   if(avisoPago.activo && avisoPago.texto && avisoPago.texto.trim() !== ''){
     document.getElementById('aviso-pago-texto').textContent = avisoPago.texto;
@@ -625,6 +635,7 @@ async function renderAluno(){
   } else {
     panelAviso.classList.add('hidden');
   }
+
   if(!carruselIniciado){
     mostrarDica(Math.floor(Math.random()*DICAS.length));
     reiniciarCarrusel();
@@ -733,7 +744,6 @@ async function renderProfessor(){
   await renderRanking();
   renderReportes();
   actualizarControlAvisoPago();
-}
 }
 
 async function renderRanking(){
@@ -914,7 +924,8 @@ document.getElementById('btn-modo-professor').onclick = async ()=>{
     await renderProfessor();
   }
 };
-  document.getElementById('btn-guardar-aviso-pago').onclick = async ()=>{
+
+document.getElementById('btn-guardar-aviso-pago').onclick = async ()=>{
   const btn = document.getElementById('btn-guardar-aviso-pago');
   const texto = document.getElementById('input-aviso-pago').value;
   await guardarAvisoPago(texto, avisoPago.activo);
