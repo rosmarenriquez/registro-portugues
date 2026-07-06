@@ -172,7 +172,7 @@
     <div>
       <p class="eyebrow eyebrow-titulo">Turma de português</p>
       <h1>Trilha do Português</h1>
-      <p class="sub">Cada tarefa te lleva un poco más lejos por Brasil. Sumá puntos y subí de nivel.</p>
+      <p class="sub">Cada tarefa te lleva un poco más lejos por Brasil. Suma puntos y sube de nivel.</p>
     </div>
     <div id="mode-toggle">
       <button id="btn-modo-professor" class="btn secondary">🔒 Área do professor</button>
@@ -275,7 +275,7 @@
       <p>Solo el profesor puede agregar puntos y gestionar alumnos.</p>
       <input type="password" id="input-pin" placeholder="PIN">
       <div><button class="btn coral" id="btn-desbloquear">Entrar</button></div>
-      <p class="sub" style="margin-top:14px;">PIN por defecto: 1234</p>
+      <p class="sub" style="margin-top:14px;">🌴 Só quem ensina português por aqui entra</p>
     </div>
 
     <div id="professor-contenido" class="hidden">
@@ -373,7 +373,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-const TEACHER_PIN = "1234";
+const TEACHER_PIN = "1379";
 let profesorDesbloqueado = false;
 
 const params = new URLSearchParams(window.location.search);
