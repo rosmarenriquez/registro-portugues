@@ -190,6 +190,10 @@
 
     <div id="aluno-contenido" class="hidden">
       <h2 id="saludo-aluno" style="margin:0 0 14px;font-size:24px;"></h2>
+      <div class="panel hidden" id="panel-aviso-pago" style="border-color:var(--coral);background:linear-gradient(135deg, rgba(255,107,74,0.18), var(--bg-panel));">
+  <p class="eyebrow" style="color:var(--coral);">💰 Aviso</p>
+  <p id="aviso-pago-texto" style="margin:0;font-size:14.5px;"></p>
+</div>
       <div class="panel" id="panel-dicas" style="text-align:center;">
   <p class="eyebrow" style="margin-bottom:12px;">💡 Dica de português</p>
   <div style="min-height:54px;display:flex;align-items:center;justify-content:center;padding:0 10px;">
@@ -312,6 +316,17 @@
         <div id="ranking-lista"></div>
         <p class="empty hidden" id="ranking-vacio">Agrega alumnos para ver el ranking.</p>
       </div>
+      <div class="panel">
+  <div class="flexbetween">
+    <p class="eyebrow" style="margin:0;">💰 Aviso de pagamento</p>
+    <button class="btn secondary" id="btn-toggle-aviso-pago">Activar</button>
+  </div>
+  <p class="sub" style="margin:8px 0;">Este mensaje se muestra a todos los alumnos cuando está activado.</p>
+  <textarea id="input-aviso-pago" rows="2" placeholder="Ej: Recuerda hacer tu pago de esta semana 💰" style="width:100%;background:var(--teal-dark);border:1px solid var(--line);color:var(--cream);font-family:'Inter',sans-serif;font-size:14px;padding:10px 12px;border-radius:10px;outline:none;resize:vertical;"></textarea>
+  <div class="row" style="margin-top:8px;">
+    <button class="btn coral" id="btn-guardar-aviso-pago">Guardar mensaje</button>
+  </div>
+</div>
 
       <div class="panel">
         <p class="eyebrow">Deshacer último registro</p>
@@ -400,6 +415,28 @@ const LOGROS = [
 let dicaIndex = 0;
 let dicaIntervalo = null;
 let carruselIniciado = false;
+  let avisoPago = {activo:false, texto:''};
+onSnapshot(doc(db, 'config', 'general'), (snap)=>{
+  avisoPago = snap.exists() ? snap.data() : {activo:false, texto:''};
+  refrescarUI();
+  if(profesorDesbloqueado) actualizarControlAvisoPago();
+});
+
+async function guardarAvisoPago(texto, activo){
+  try{ await setDoc(doc(db, 'config', 'general'), {texto, activo}, {merge:true}); }
+  catch(e){ console.error('Error al guardar el aviso', e); alert('No se pudo guardar. Revisa tu conexión.'); }
+}
+
+function actualizarControlAvisoPago(){
+  const btn = document.getElementById('btn-toggle-aviso-pago');
+  const textarea = document.getElementById('input-aviso-pago');
+  if(!btn || !textarea) return;
+  btn.textContent = avisoPago.activo ? 'Desactivar' : 'Activar';
+  btn.className = avisoPago.activo ? 'btn coral' : 'btn secondary';
+  if(document.activeElement !== textarea){
+    textarea.value = avisoPago.texto || '';
+  }
+}
 
 let roster = [];           // [{id, name}]
 let studentsMap = {};      // { id: {total, history:[]} }
@@ -581,7 +618,13 @@ async function renderAluno(){
   }
   vacio.classList.add('hidden');
   contenido.classList.remove('hidden');
-
+  const panelAviso = document.getElementById('panel-aviso-pago');
+  if(avisoPago.activo && avisoPago.texto && avisoPago.texto.trim() !== ''){
+    document.getElementById('aviso-pago-texto').textContent = avisoPago.texto;
+    panelAviso.classList.remove('hidden');
+  } else {
+    panelAviso.classList.add('hidden');
+  }
   if(!carruselIniciado){
     mostrarDica(Math.floor(Math.random()*DICAS.length));
     reiniciarCarrusel();
@@ -689,6 +732,8 @@ async function renderProfessor(){
 
   await renderRanking();
   renderReportes();
+  actualizarControlAvisoPago();
+}
 }
 
 async function renderRanking(){
@@ -868,6 +913,18 @@ document.getElementById('btn-modo-professor').onclick = async ()=>{
     document.getElementById('professor-contenido').classList.remove('hidden');
     await renderProfessor();
   }
+};
+  document.getElementById('btn-guardar-aviso-pago').onclick = async ()=>{
+  const btn = document.getElementById('btn-guardar-aviso-pago');
+  const texto = document.getElementById('input-aviso-pago').value;
+  await guardarAvisoPago(texto, avisoPago.activo);
+  btn.textContent = '¡Guardado!';
+  setTimeout(()=>{ btn.textContent = 'Guardar mensaje'; }, 1500);
+};
+
+document.getElementById('btn-toggle-aviso-pago').onclick = async ()=>{
+  const texto = document.getElementById('input-aviso-pago').value;
+  await guardarAvisoPago(texto, !avisoPago.activo);
 };
 
 document.getElementById('btn-ver-como-alumno').onclick = ()=>{
