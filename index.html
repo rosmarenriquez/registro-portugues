@@ -616,6 +616,16 @@
       </div>
 
       <div class="panel">
+        <p class="eyebrow">🎯 Sistema de Pontuação</p>
+        <p class="sub" style="margin:0 0 10px;">Quantos pontos você ganha por cada coisa:</p>
+        <table id="tabla-sistema-pontuacao">
+          <thead><tr><th>Ação</th><th style="text-align:right;">Pontos</th></tr></thead>
+          <tbody></tbody>
+        </table>
+        <div class="regra-box" style="margin-top:12px;margin-bottom:0;">✨ Além dessas, o professor também pode dar <b>pontos personalizados</b> por atividades especiais feitas em sala de aula — por isso às vezes você vai ver no seu histórico uma ação que não está nesta lista.</div>
+      </div>
+
+      <div class="panel">
         <p class="eyebrow">Histórico de pontos</p>
         <table id="tabla-historico-aluno">
           <thead><tr><th>Data</th><th>Ação</th><th style="text-align:right;">Pontos</th></tr></thead>
@@ -1452,6 +1462,12 @@ document.getElementById('select-aluno-prof').addEventListener('change', (e)=>{
 });
 
 (function init(){
+  const tbodyPuntuacion = document.querySelector('#tabla-sistema-pontuacao tbody');
+  ACCIONES.forEach(a=>{
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td>${a.nombre}</td><td style="text-align:right;color:var(--gold);">+${a.puntos}</td>`;
+    tbodyPuntuacion.appendChild(tr);
+  });
   renderAluno();
 })();
 </script>
