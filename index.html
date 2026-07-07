@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Trilha do Português — Registro de progreso</title>
+<title>Trilha do Português — Registro de Progresso</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Inter:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
@@ -172,7 +172,7 @@
     <div>
       <p class="eyebrow eyebrow-titulo">Turma de português</p>
       <h1>Trilha do Português</h1>
-      <p class="sub">Cada tarefa te lleva un poco más lejos por Brasil. Sumá puntos y subí de nivel.</p>
+      <p class="sub">Cada tarefa te leva um pouco mais longe pelo Brasil. Some pontos e suba de nível.</p>
     </div>
     <div id="mode-toggle">
       <button id="btn-modo-professor" class="btn secondary">🔒 Área do professor</button>
@@ -186,7 +186,7 @@
       <select id="select-aluno"></select>
     </div>
 
-    <div id="aluno-vazio" class="panel empty hidden">Todavía no hay alumnos cargados. Pídele a tu profesor que te agregue en el modo Professor.</div>
+    <div id="aluno-vazio" class="panel empty hidden">Ainda não há alunos cadastrados. Peça ao seu professor para te adicionar no modo Professor.</div>
 
     <div id="aluno-contenido" class="hidden">
       <h2 id="saludo-aluno" style="margin:0 0 14px;font-size:24px;"></h2>
@@ -229,21 +229,21 @@
       </div>
 
       <div class="panel">
-        <p class="eyebrow">Logros</p>
+        <p class="eyebrow">Conquistas</p>
         <div class="acoes-grid" id="logros-grid"></div>
       </div>
 
       <div class="panel">
         <p class="eyebrow">Histórico de pontos</p>
         <table id="tabla-historico-aluno">
-          <thead><tr><th>Fecha</th><th>Acción</th><th style="text-align:right;">Puntos</th></tr></thead>
+          <thead><tr><th>Data</th><th>Ação</th><th style="text-align:right;">Pontos</th></tr></thead>
           <tbody></tbody>
         </table>
-        <p class="empty hidden" id="historico-aluno-vacio">Todavía no tienes puntos registrados. ¡A por el primero!</p>
+        <p class="empty hidden" id="historico-aluno-vacio">Você ainda não tem pontos registrados. Vai atrás do primeiro!</p>
       </div>
       <div class="panel" style="background:linear-gradient(135deg, var(--bg-panel-2), var(--bg-panel));border-color:var(--gold);">
         <p class="eyebrow">📚 Material de estudo</p>
-        <p class="sub" style="margin:0 0 14px;">Textos, ejercicios y recursos extra para practicar tu português.</p>
+        <p class="sub" style="margin:0 0 14px;">Textos, exercícios e recursos extras para praticar seu português.</p>
         <a href="https://sites.google.com/view/portugusbr/inicio" target="_blank" rel="noopener" class="btn coral" style="display:inline-block;text-decoration:none;">Abrir material →</a>
       </div>
 
@@ -254,16 +254,16 @@
       </div>
 
       <div class="panel">
-        <p class="eyebrow">🛠️ Reportar un problema</p>
-        <p class="sub" style="margin:0 0 8px;">¿Algo no funciona bien o no se ve como debería? Cuéntame acá.</p>
-        <textarea id="input-reporte" rows="3" placeholder="Ej: No se ve mi historial de puntos." style="width:100%;background:var(--teal-dark);border:1px solid var(--line);color:var(--cream);font-family:'Inter',sans-serif;font-size:14px;padding:10px 12px;border-radius:10px;outline:none;resize:vertical;"></textarea>
+        <p class="eyebrow">🛠️ Relatar um problema</p>
+        <p class="sub" style="margin:0 0 8px;">Algo não está funcionando bem ou não parece certo? Me conta aqui.</p>
+        <textarea id="input-reporte" rows="3" placeholder="Ex: Não aparece meu histórico de pontos." style="width:100%;background:var(--teal-dark);border:1px solid var(--line);color:var(--cream);font-family:'Inter',sans-serif;font-size:14px;padding:10px 12px;border-radius:10px;outline:none;resize:vertical;"></textarea>
         <div class="row" style="margin-top:8px;">
-          <button class="btn secondary" id="btn-enviar-reporte">Enviar reporte</button>
+          <button class="btn secondary" id="btn-enviar-reporte">Enviar relato</button>
         </div>
         <div class="divider"></div>
-        <p class="eyebrow">Meus reportes</p>
+        <p class="eyebrow">Meus relatos</p>
         <div id="mis-reportes-lista"></div>
-        <p class="empty hidden" id="mis-reportes-vacio">Todavía no enviaste ningún reporte.</p>
+        <p class="empty hidden" id="mis-reportes-vacio">Você ainda não enviou nenhum relato.</p>
       </div>
 
     </div>
@@ -274,8 +274,8 @@
 
     <div id="professor-lock" class="panel lock-screen">
       <p class="eyebrow">Área do professor</p>
-      <h3>Ingresa el PIN</h3>
-      <p>Solo el profesor puede agregar puntos y gestionar alumnos.</p>
+      <h3>Digite o PIN</h3>
+      <p>Somente o professor pode adicionar pontos e gerenciar alunos.</p>
       <input type="password" id="input-pin" placeholder="PIN">
       <div><button class="btn coral" id="btn-desbloquear">Entrar</button></div>
       <p class="sub" style="margin-top:14px;">PIN por defecto: 1234</p>
@@ -284,69 +284,69 @@
     <div id="professor-contenido" class="hidden">
 
       <div class="panel">
-        <p class="eyebrow">Agregar alumno</p>
+        <p class="eyebrow">Adicionar aluno</p>
         <div class="row">
-          <input type="text" id="input-nuevo-alumno" placeholder="Nombre del alumno" style="flex:1;min-width:180px;">
-          <button class="btn coral" id="btn-agregar-alumno">Agregar</button>
+          <input type="text" id="input-nuevo-alumno" placeholder="Nome do aluno" style="flex:1;min-width:180px;">
+          <button class="btn coral" id="btn-agregar-alumno">Adicionar</button>
         </div>
       </div>
 
       <div class="panel">
-        <p class="eyebrow">Registrar puntos</p>
+        <p class="eyebrow">Registrar pontos</p>
         <select id="select-aluno-prof" style="margin-bottom:14px;"></select>
         <div class="row" style="margin-bottom:14px;">
-          <button class="btn secondary" id="btn-ver-como-alumno">👀 Ver como alumno</button>
+          <button class="btn secondary" id="btn-ver-como-alumno">👀 Ver como aluno</button>
         </div>
         <div class="acoes-grid" id="grid-acciones"></div>
         <div class="divider"></div>
-        <p class="eyebrow">Acción personalizada</p>
+        <p class="eyebrow">Ação personalizada</p>
         <div class="row">
-          <input type="text" id="input-accion-custom" placeholder="Nombre de la acción" style="flex:2;min-width:140px;">
-          <input type="number" id="input-puntos-custom" placeholder="Puntos" style="flex:1;min-width:80px;">
-          <button class="btn secondary" id="btn-accion-custom">Sumar</button>
+          <input type="text" id="input-accion-custom" placeholder="Nome da ação" style="flex:2;min-width:140px;">
+          <input type="number" id="input-puntos-custom" placeholder="Pontos" style="flex:1;min-width:80px;">
+          <button class="btn secondary" id="btn-accion-custom">Somar</button>
         </div>
         <div class="divider"></div>
         <p class="eyebrow">Mensagem para o aluno</p>
-        <p class="sub" style="margin:0 0 8px;">Este mensaje lo verá solo el alumno seleccionado arriba.</p>
-        <textarea id="input-nota-profesor" rows="3" placeholder="Ej: ¡Excelente progreso esta semana! Sigue practicando la conjugación de verbos." style="width:100%;background:var(--teal-dark);border:1px solid var(--line);color:var(--cream);font-family:'Inter',sans-serif;font-size:14px;padding:10px 12px;border-radius:10px;outline:none;resize:vertical;"></textarea>
+        <p class="sub" style="margin:0 0 8px;">Esta mensagem será vista apenas pelo aluno selecionado acima.</p>
+        <textarea id="input-nota-profesor" rows="3" placeholder="Ex: Excelente progresso essa semana! Continue praticando a conjugação dos verbos." style="width:100%;background:var(--teal-dark);border:1px solid var(--line);color:var(--cream);font-family:'Inter',sans-serif;font-size:14px;padding:10px 12px;border-radius:10px;outline:none;resize:vertical;"></textarea>
         <div class="row" style="margin-top:8px;">
-          <button class="btn coral" id="btn-guardar-nota">Guardar mensaje</button>
+          <button class="btn coral" id="btn-guardar-nota">Salvar mensagem</button>
         </div>
       </div>
 
       <div class="panel">
         <div class="flexbetween">
-          <p class="eyebrow" style="margin:0;">Ranking de la clase</p>
-          <button class="btn secondary" id="btn-bloquear">Salir del modo professor</button>
+          <p class="eyebrow" style="margin:0;">Ranking da turma</p>
+          <button class="btn secondary" id="btn-bloquear">Sair do modo professor</button>
         </div>
         <div id="ranking-lista"></div>
-        <p class="empty hidden" id="ranking-vacio">Agrega alumnos para ver el ranking.</p>
+        <p class="empty hidden" id="ranking-vacio">Adicione alunos para ver o ranking.</p>
       </div>
 
       <div class="panel">
         <div class="flexbetween">
           <p class="eyebrow" style="margin:0;">💰 Aviso de pagamento</p>
-          <button class="btn secondary" id="btn-toggle-aviso-pago">Activar</button>
+          <button class="btn secondary" id="btn-toggle-aviso-pago">Ativar</button>
         </div>
-        <p class="sub" style="margin:8px 0;">Este mensaje se muestra a todos los alumnos cuando está activado.</p>
-        <textarea id="input-aviso-pago" rows="2" placeholder="Ej: Recuerda hacer tu pago de esta semana 💰" style="width:100%;background:var(--teal-dark);border:1px solid var(--line);color:var(--cream);font-family:'Inter',sans-serif;font-size:14px;padding:10px 12px;border-radius:10px;outline:none;resize:vertical;"></textarea>
+        <p class="sub" style="margin:8px 0;">Esta mensagem aparece para todos os alunos quando estiver ativada.</p>
+        <textarea id="input-aviso-pago" rows="2" placeholder="Ex: Lembre-se de fazer o pagamento desta semana 💰" style="width:100%;background:var(--teal-dark);border:1px solid var(--line);color:var(--cream);font-family:'Inter',sans-serif;font-size:14px;padding:10px 12px;border-radius:10px;outline:none;resize:vertical;"></textarea>
         <div class="row" style="margin-top:8px;">
-          <button class="btn coral" id="btn-guardar-aviso-pago">Guardar mensaje</button>
+          <button class="btn coral" id="btn-guardar-aviso-pago">Salvar mensagem</button>
         </div>
       </div>
 
       <div class="panel">
-        <p class="eyebrow">Deshacer último registro</p>
+        <p class="eyebrow">Desfazer último registro</p>
         <div class="row">
           <select id="select-aluno-deshacer" style="flex:1;min-width:180px;"></select>
-          <button class="btn danger" id="btn-deshacer">Quitar último punto</button>
+          <button class="btn danger" id="btn-deshacer">Remover último ponto</button>
         </div>
       </div>
 
       <div class="panel">
-        <p class="eyebrow">🛠️ Reportes de alumnos</p>
+        <p class="eyebrow">🛠️ Relatos dos alunos</p>
         <div id="reportes-lista"></div>
-        <p class="empty hidden" id="reportes-vacio">No hay reportes pendientes. 🎉</p>
+        <p class="empty hidden" id="reportes-vacio">Não há relatos pendentes. 🎉</p>
       </div>
 
     </div>
@@ -433,14 +433,14 @@ onSnapshot(doc(db, 'config', 'general'), (snap)=>{
 
 async function guardarAvisoPago(texto, activo){
   try{ await setDoc(doc(db, 'config', 'general'), {texto, activo}, {merge:true}); }
-  catch(e){ console.error('Error al guardar el aviso', e); alert('No se pudo guardar. Revisa tu conexión.'); }
+  catch(e){ console.error('Error al guardar el aviso', e); alert('Não foi possível salvar. Verifique sua conexão.'); }
 }
 
 function actualizarControlAvisoPago(){
   const btn = document.getElementById('btn-toggle-aviso-pago');
   const textarea = document.getElementById('input-aviso-pago');
   if(!btn || !textarea) return;
-  btn.textContent = avisoPago.activo ? 'Desactivar' : 'Activar';
+  btn.textContent = avisoPago.activo ? 'Desativar' : 'Ativar';
   btn.className = avisoPago.activo ? 'btn coral' : 'btn secondary';
   if(document.activeElement !== textarea){
     textarea.value = avisoPago.texto || '';
@@ -510,7 +510,7 @@ function nivelDe(total){
 
 function fechaHoy(){
   const d = new Date();
-  return d.toLocaleDateString('es-ES', {day:'2-digit', month:'2-digit', year:'numeric'});
+  return d.toLocaleDateString('pt-BR', {day:'2-digit', month:'2-digit', year:'numeric'});
 }
 
 function uid(){
@@ -593,7 +593,7 @@ async function renderAluno(){
     panelSelector.classList.add('hidden');
     contenido.classList.add('hidden');
     vacio.classList.remove('hidden');
-    vacio.textContent = 'Necesitas tu link personal para ver tu progreso. Pídeselo a tu profesor.';
+    vacio.textContent = 'Você precisa do seu link pessoal para ver seu progresso. Peça ao seu professor.';
     return;
   }
 
@@ -609,8 +609,8 @@ async function renderAluno(){
   if(!alumnoExiste){
     vacio.classList.remove('hidden');
     vacio.textContent = alumnoFijo
-      ? 'No encontramos tu registro. Pídele el link correcto a tu profesor.'
-      : 'Todavía no hay alumnos cargados. Pídele a tu profesor que te agregue en el modo Professor.';
+      ? 'Não encontramos seu registro. Peça o link correto ao seu professor.'
+      : 'Ainda não há alunos cadastrados. Peça ao seu professor para te adicionar no modo Professor.';
     contenido.classList.add('hidden');
     return;
   }
@@ -646,9 +646,9 @@ async function renderAluno(){
 
   if(nivel.idx < NIVELES.length-1){
     const faltan = NIVELES[nivel.idx].max - data.total + 1;
-    document.getElementById('proximo-nivel-txt').textContent = `Te faltan ${faltan} puntos para ${NIVELES[nivel.idx+1].emoji} ${NIVELES[nivel.idx+1].nombre}`;
+    document.getElementById('proximo-nivel-txt').textContent = `Faltam ${faltan} pontos para ${NIVELES[nivel.idx+1].emoji} ${NIVELES[nivel.idx+1].nombre}`;
   } else {
-    document.getElementById('proximo-nivel-txt').textContent = '¡Llegaste al nivel máximo!';
+    document.getElementById('proximo-nivel-txt').textContent = 'Você chegou ao nível máximo!';
   }
 
   dibujarTrilha(data.total);
@@ -700,7 +700,7 @@ async function renderAluno(){
       const row = document.createElement('div');
       row.className = 'roster-item';
       row.innerHTML = `<span class="name" style="font-weight:400;font-size:13.5px;">${r.resuelto ? '✅' : '🔴'} ${r.message} <span style="color:var(--cream-dim);font-size:11px;">(${r.date})</span></span>
-        <span class="pts" style="color:${r.resuelto ? 'var(--teal-bright)' : 'var(--coral)'};">${r.resuelto ? 'Resuelto' : 'Pendiente'}</span>`;
+        <span class="pts" style="color:${r.resuelto ? 'var(--teal-bright)' : 'var(--coral)'};">${r.resuelto ? 'Resolvido' : 'Pendente'}</span>`;
       misReportesLista.appendChild(row);
     });
   }
@@ -759,15 +759,15 @@ async function renderRanking(){
       <span style="display:flex;align-items:center;gap:8px;">
         <span class="pts">${s.total} pts · ${nivel.nombre}</span>
         <button class="btn secondary" style="padding:5px 10px;font-size:11px;" data-linkid="${s.id}">Copiar link</button>
-        <button class="btn danger" style="padding:5px 10px;font-size:11px;" data-id="${s.id}" data-name="${s.name}">Eliminar</button>
+        <button class="btn danger" style="padding:5px 10px;font-size:11px;" data-id="${s.id}" data-name="${s.name}">Excluir</button>
       </span>`;
     row.querySelector('[data-linkid]').onclick = (e)=>{
       const url = `${window.location.origin}${window.location.pathname}?alumno=${e.target.dataset.linkid}`;
       navigator.clipboard.writeText(url).then(()=>{
-        e.target.textContent = '¡Copiado!';
+        e.target.textContent = 'Copiado!';
         setTimeout(()=>{ e.target.textContent = 'Copiar link'; }, 1500);
       }).catch(()=>{
-        prompt('Copia este link manualmente:', url);
+        prompt('Copie este link manualmente:', url);
       });
     };
     row.querySelector('[data-id]').onclick = (e)=>{
@@ -786,7 +786,7 @@ async function sumarPuntos(id, accion, puntos){
     await setDoc(doc(db, 'students', id), {total: nuevoTotal, history: nuevoHistorial}, {merge:true});
   }catch(e){
     console.error('Error al sumar puntos', e);
-    alert('No se pudo guardar el punto. Revisa tu conexión.');
+    alert('Não foi possível salvar o ponto. Verifique sua conexão.');
   }
 }
 
@@ -798,7 +798,7 @@ async function agregarAlumno(nombre){
     await setDoc(doc(db, 'students', nuevoDoc.id), {total:0, history:[], note:''}, {merge:true});
   }catch(e){
     console.error('Error al agregar alumno', e);
-    alert('No se pudo agregar al alumno. Revisa tu conexión.');
+    alert('Não foi possível adicionar o aluno. Verifique sua conexão.');
   }
 }
 
@@ -813,7 +813,7 @@ async function quitarUltimoPunto(id){
     await setDoc(doc(db, 'students', id), {total: totalNuevo, history: historialNuevo}, {merge:true});
   }catch(e){
     console.error('Error al deshacer punto', e);
-    alert('No se pudo deshacer el punto. Revisa tu conexión.');
+    alert('Não foi possível desfazer o ponto. Verifique sua conexão.');
   }
 }
 
@@ -823,19 +823,19 @@ async function guardarNota(id, texto){
     await setDoc(doc(db, 'students', id), {note: texto}, {merge:true});
   }catch(e){
     console.error('Error al guardar la nota', e);
-    alert('No se pudo guardar el mensaje. Revisa tu conexión.');
+    alert('Não foi possível salvar a mensagem. Verifique sua conexão.');
   }
 }
 
 async function eliminarAlumno(id, nombre){
-  const confirmado = confirm(`¿Seguro que quieres eliminar a "${nombre}"? Se borrará todo su historial y no se puede deshacer.`);
+  const confirmado = confirm(`Tem certeza que deseja excluir "${nombre}"? Todo o histórico dele será apagado e não pode ser desfeito.`);
   if(!confirmado) return;
   try{
     await deleteDoc(doc(db, 'roster', id));
     await deleteDoc(doc(db, 'students', id));
   }catch(e){
     console.error('Error al eliminar alumno', e);
-    alert('No se pudo eliminar al alumno. Revisa tu conexión.');
+    alert('Não foi possível excluir o aluno. Verifique sua conexão.');
   }
 }
 
@@ -845,14 +845,14 @@ async function enviarReporte(studentId, studentName, mensaje){
   try{
     await addDoc(collection(db, 'reportes'), {
       studentId: studentId || null,
-      studentName: studentName || 'Alumno',
+      studentName: studentName || 'Aluno',
       message: mensaje,
       date: fechaHoy(),
       resuelto: false
     });
   }catch(e){
     console.error('Error al enviar el reporte', e);
-    alert('No se pudo enviar el reporte. Revisa tu conexión.');
+    alert('Não foi possível enviar o relato. Verifique sua conexão.');
   }
 }
 
@@ -884,8 +884,8 @@ function renderReportes(){
     row.className = 'roster-item';
     row.innerHTML = `<span class="name" style="font-weight:500;">🔴 <b>${r.studentName}</b> — ${r.message} <span style="color:var(--cream-dim);font-size:11px;">(${r.date})</span></span>
       <span style="display:flex;gap:8px;">
-        <button class="btn secondary" style="padding:5px 10px;font-size:11px;" data-resolver="${r.id}">Resuelto</button>
-        <button class="btn danger" style="padding:5px 10px;font-size:11px;" data-borrar="${r.id}">Eliminar</button>
+        <button class="btn secondary" style="padding:5px 10px;font-size:11px;" data-resolver="${r.id}">Resolvido</button>
+        <button class="btn danger" style="padding:5px 10px;font-size:11px;" data-borrar="${r.id}">Excluir</button>
       </span>`;
     row.querySelector('[data-resolver]').onclick = (e)=> marcarReporteResuelto(e.target.dataset.resolver);
     row.querySelector('[data-borrar]').onclick = (e)=> eliminarReporte(e.target.dataset.borrar);
@@ -897,7 +897,7 @@ function renderReportes(){
     row.className = 'roster-item';
     row.style.opacity = '0.5';
     row.innerHTML = `<span class="name" style="font-weight:400;">✅ ${r.studentName} — ${r.message}</span>
-      <button class="btn danger" style="padding:5px 10px;font-size:11px;" data-borrar="${r.id}">Eliminar</button>`;
+      <button class="btn danger" style="padding:5px 10px;font-size:11px;" data-borrar="${r.id}">Excluir</button>`;
     row.querySelector('[data-borrar]').onclick = (e)=> eliminarReporte(e.target.dataset.borrar);
     lista.appendChild(row);
   });
@@ -927,8 +927,8 @@ document.getElementById('btn-guardar-aviso-pago').onclick = async ()=>{
   const btn = document.getElementById('btn-guardar-aviso-pago');
   const texto = document.getElementById('input-aviso-pago').value;
   await guardarAvisoPago(texto, avisoPago.activo);
-  btn.textContent = '¡Guardado!';
-  setTimeout(()=>{ btn.textContent = 'Guardar mensaje'; }, 1500);
+  btn.textContent = 'Salvo!';
+  setTimeout(()=>{ btn.textContent = 'Salvar mensagem'; }, 1500);
 };
 
 document.getElementById('btn-toggle-aviso-pago').onclick = async ()=>{
@@ -951,7 +951,7 @@ document.getElementById('btn-desbloquear').onclick = async ()=>{
     document.getElementById('professor-contenido').classList.remove('hidden');
     await renderProfessor();
   } else {
-    alert('PIN incorrecto');
+    alert('PIN incorreto');
   }
 };
 document.getElementById('btn-bloquear').onclick = ()=>{
@@ -993,8 +993,8 @@ document.getElementById('btn-guardar-nota').onclick = async ()=>{
   const texto = document.getElementById('input-nota-profesor').value;
   const btn = document.getElementById('btn-guardar-nota');
   await guardarNota(id, texto);
-  btn.textContent = '¡Guardado!';
-  setTimeout(()=>{ btn.textContent = 'Guardar mensaje'; }, 1500);
+  btn.textContent = 'Salvo!';
+  setTimeout(()=>{ btn.textContent = 'Salvar mensagem'; }, 1500);
 };
 
 document.getElementById('btn-enviar-reporte').onclick = async ()=>{
@@ -1004,10 +1004,10 @@ document.getElementById('btn-enviar-reporte').onclick = async ()=>{
   const id = alumnoFijo || select.value;
   const alumno = roster.find(s => s.id === id);
   if(!textarea.value.trim()) return;
-  await enviarReporte(id, alumno ? alumno.name : 'Alumno', textarea.value);
+  await enviarReporte(id, alumno ? alumno.name : 'Aluno', textarea.value);
   textarea.value = '';
-  btn.textContent = '¡Enviado!';
-  setTimeout(()=>{ btn.textContent = 'Enviar reporte'; }, 1500);
+  btn.textContent = 'Enviado!';
+  setTimeout(()=>{ btn.textContent = 'Enviar relato'; }, 1500);
 };
 
 document.getElementById('select-aluno').addEventListener('change', renderAluno);
