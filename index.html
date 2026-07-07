@@ -223,6 +223,14 @@
         </div>
       </div>
 
+      <div class="panel">
+        <p class="eyebrow">🏆 Tabela de Classificação</p>
+        <table id="tabla-classificacion">
+          <thead><tr><th style="width:36px;">#</th><th>Aluno</th><th style="text-align:right;">Pontos</th></tr></thead>
+          <tbody id="tabla-classificacion-body"></tbody>
+        </table>
+      </div>
+
       <div class="panel hidden" id="panel-nota-profesor">
         <p class="eyebrow">💌 Mensagem do professor</p>
         <p class="sub" id="nota-profesor-texto" style="font-size:14.5px;color:var(--cream);"></p>
@@ -278,7 +286,7 @@
       <p>Somente o professor pode adicionar pontos e gerenciar alunos.</p>
       <input type="password" id="input-pin" placeholder="PIN">
       <div><button class="btn coral" id="btn-desbloquear">Entrar</button></div>
-      <p class="sub" style="margin-top:14px;">Só acessa quem ensina</p>
+      <p class="sub" style="margin-top:14px;">PIN por defecto: 1234</p>
     </div>
 
     <div id="professor-contenido" class="hidden">
@@ -376,7 +384,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-const TEACHER_PIN = "1379";
+const TEACHER_PIN = "1234";
 let profesorDesbloqueado = false;
 
 const params = new URLSearchParams(window.location.search);
@@ -642,7 +650,23 @@ async function renderAluno(){
 
   const totales = roster.map(s => cargarAlumno(s.id).total);
   const posicion = 1 + totales.filter(t => t > data.total).length;
-  document.getElementById('badge-posicion').textContent = `🏆 Puesto ${posicion} de ${roster.length}`;
+  document.getElementById('badge-posicion').textContent = `🏆 ${posicion}º lugar de ${roster.length}`;
+
+  const tbodyClasif = document.getElementById('tabla-classificacion-body');
+  tbodyClasif.innerHTML = '';
+  const medalhas = ['🥇','🥈','🥉'];
+  const listaOrdenada = roster
+    .map(s => ({...s, total: cargarAlumno(s.id).total}))
+    .sort((a,b) => b.total - a.total);
+  let posAtual = 0, totalAnterior = null;
+  listaOrdenada.forEach((s, idx)=>{
+    if(s.total !== totalAnterior){ posAtual = idx + 1; totalAnterior = s.total; }
+    const tr = document.createElement('tr');
+    if(s.id === id){ tr.style.background = 'rgba(244,183,64,0.12)'; tr.style.fontWeight = '700'; }
+    const posTxt = medalhas[posAtual-1] ? medalhas[posAtual-1] : posAtual;
+    tr.innerHTML = `<td>${posTxt}</td><td>${s.name}${s.id===id ? ' (você)' : ''}</td><td style="text-align:right;color:var(--gold);">${s.total}</td>`;
+    tbodyClasif.appendChild(tr);
+  });
 
   if(nivel.idx < NIVELES.length-1){
     const faltan = NIVELES[nivel.idx].max - data.total + 1;
