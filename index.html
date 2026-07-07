@@ -191,6 +191,23 @@
     <div id="aluno-contenido" class="hidden">
       <h2 id="saludo-aluno" style="margin:0 0 14px;font-size:24px;"></h2>
 
+      <div class="row" style="margin-bottom:16px;">
+        <button class="btn coral" id="btn-aba-progresso">🏠 Meu progresso</button>
+        <button class="btn secondary" id="btn-aba-material">📚 Material de estudo</button>
+      </div>
+
+      <div id="aba-material" class="hidden">
+        <div class="panel">
+          <div class="flexbetween" style="margin-bottom:12px;">
+            <p class="eyebrow" style="margin:0;">📚 Material de estudo</p>
+            <a href="https://sites.google.com/view/portugusbr/inicio" target="_blank" rel="noopener" class="btn secondary" style="text-decoration:none;font-size:12px;padding:7px 12px;">Abrir em nova aba ↗</a>
+          </div>
+          <div id="material-iframe-wrap" style="border-radius:12px;overflow:hidden;border:1px solid var(--line);background:var(--teal-dark);min-height:70vh;">
+          </div>
+        </div>
+      </div>
+
+      <div id="aba-progresso">
       <div class="panel hidden" id="panel-aviso-pago" style="border-color:var(--coral);background:linear-gradient(135deg, rgba(255,107,74,0.18), var(--bg-panel));">
         <p class="eyebrow" style="color:var(--coral);">💰 Aviso</p>
         <p id="aviso-pago-texto" style="margin:0;font-size:14.5px;"></p>
@@ -249,12 +266,6 @@
         </table>
         <p class="empty hidden" id="historico-aluno-vacio">Você ainda não tem pontos registrados. Vai atrás do primeiro!</p>
       </div>
-      <div class="panel" style="background:linear-gradient(135deg, var(--bg-panel-2), var(--bg-panel));border-color:var(--gold);">
-        <p class="eyebrow">📚 Material de estudo</p>
-        <p class="sub" style="margin:0 0 14px;">Textos, exercícios e recursos extras para praticar seu português.</p>
-        <a href="https://sites.google.com/view/portugusbr/inicio" target="_blank" rel="noopener" class="btn coral" style="display:inline-block;text-decoration:none;">Abrir material →</a>
-      </div>
-
       <div class="panel" style="background:linear-gradient(135deg, var(--bg-panel-2), var(--bg-panel));border-color:var(--teal-bright);">
         <p class="eyebrow">🗂️ Nosso Trello</p>
         <p class="sub" style="margin:0 0 14px;">Semanas, desafios e todo o cronograma do curso.</p>
@@ -277,6 +288,7 @@
         <div id="mis-reportes-lista"></div>
         <p class="empty hidden" id="mis-reportes-vacio">Você ainda não enviou nenhum relato.</p>
       </div>
+      </div>
 
     </div>
   </div>
@@ -290,7 +302,7 @@
       <p>Somente o professor pode adicionar pontos e gerenciar alunos.</p>
       <input type="password" id="input-pin" placeholder="PIN">
       <div><button class="btn coral" id="btn-desbloquear">Entrar</button></div>
-      <p class="sub" style="margin-top:14px;">Só entra quem ensina</p>
+      <p class="sub" style="margin-top:14px;">Acesso restringido</p>
     </div>
 
     <div id="professor-contenido" class="hidden">
@@ -436,6 +448,32 @@ let dicaIndex = 0;
 let dicaIntervalo = null;
 let carruselIniciado = false;
 let tipoReporteSeleccionado = 'problema';
+let materialCargado = false;
+
+function mostrarAba(aba){
+  const btnProgresso = document.getElementById('btn-aba-progresso');
+  const btnMaterial = document.getElementById('btn-aba-material');
+  const abaProgresso = document.getElementById('aba-progresso');
+  const abaMaterial = document.getElementById('aba-material');
+
+  if(aba === 'material'){
+    btnMaterial.className = 'btn coral';
+    btnProgresso.className = 'btn secondary';
+    abaMaterial.classList.remove('hidden');
+    abaProgresso.classList.add('hidden');
+    if(!materialCargado){
+      const wrap = document.getElementById('material-iframe-wrap');
+      wrap.innerHTML = '<iframe src="https://sites.google.com/view/portugusbr/inicio" style="width:100%;height:70vh;border:none;display:block;" title="Material de português" loading="lazy"></iframe>';
+      materialCargado = true;
+    }
+  } else {
+    btnProgresso.className = 'btn coral';
+    btnMaterial.className = 'btn secondary';
+    abaProgresso.classList.remove('hidden');
+    abaMaterial.classList.add('hidden');
+  }
+}
+
 
 let avisoPago = {activo:false, texto:''};
 onSnapshot(doc(db, 'config', 'general'), (snap)=>{
@@ -1039,6 +1077,9 @@ function seleccionarTipoReporte(tipo){
 }
 document.getElementById('btn-tipo-problema').onclick = ()=> seleccionarTipoReporte('problema');
 document.getElementById('btn-tipo-sugestao').onclick = ()=> seleccionarTipoReporte('sugestao');
+
+document.getElementById('btn-aba-progresso').onclick = ()=> mostrarAba('progresso');
+document.getElementById('btn-aba-material').onclick = ()=> mostrarAba('material');
 
 document.getElementById('btn-enviar-reporte').onclick = async ()=>{
   const textarea = document.getElementById('input-reporte');
