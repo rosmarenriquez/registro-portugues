@@ -262,11 +262,15 @@
       </div>
 
       <div class="panel">
-        <p class="eyebrow">🛠️ Relatar um problema</p>
-        <p class="sub" style="margin:0 0 8px;">Algo não está funcionando bem ou não parece certo? Me conta aqui.</p>
+        <p class="eyebrow">🛠️ Fale com o professor</p>
+        <p class="sub" style="margin:0 0 10px;">Algo não está funcionando bem? Ou tem uma ideia para melhorar a página?</p>
+        <div class="row" style="margin-bottom:10px;">
+          <button class="btn coral" id="btn-tipo-problema" data-tipo="problema">🐛 Reportar problema</button>
+          <button class="btn secondary" id="btn-tipo-sugestao" data-tipo="sugestao">💡 Sugestão de melhoria</button>
+        </div>
         <textarea id="input-reporte" rows="3" placeholder="Ex: Não aparece meu histórico de pontos." style="width:100%;background:var(--teal-dark);border:1px solid var(--line);color:var(--cream);font-family:'Inter',sans-serif;font-size:14px;padding:10px 12px;border-radius:10px;outline:none;resize:vertical;"></textarea>
         <div class="row" style="margin-top:8px;">
-          <button class="btn secondary" id="btn-enviar-reporte">Enviar relato</button>
+          <button class="btn secondary" id="btn-enviar-reporte">Enviar</button>
         </div>
         <div class="divider"></div>
         <p class="eyebrow">Meus relatos</p>
@@ -286,7 +290,7 @@
       <p>Somente o professor pode adicionar pontos e gerenciar alunos.</p>
       <input type="password" id="input-pin" placeholder="PIN">
       <div><button class="btn coral" id="btn-desbloquear">Entrar</button></div>
-      <p class="sub" style="margin-top:14px;">Só quem ensina pode acessar</p>
+      <p class="sub" style="margin-top:14px;">Só entra quem ensina</p>
     </div>
 
     <div id="professor-contenido" class="hidden">
@@ -431,6 +435,7 @@ const DICAS = [
 let dicaIndex = 0;
 let dicaIntervalo = null;
 let carruselIniciado = false;
+let tipoReporteSeleccionado = 'problema';
 
 let avisoPago = {activo:false, texto:''};
 onSnapshot(doc(db, 'config', 'general'), (snap)=>{
@@ -723,7 +728,8 @@ async function renderAluno(){
     misReportes.forEach(r=>{
       const row = document.createElement('div');
       row.className = 'roster-item';
-      row.innerHTML = `<span class="name" style="font-weight:400;font-size:13.5px;">${r.resuelto ? '✅' : '🔴'} ${r.message} <span style="color:var(--cream-dim);font-size:11px;">(${r.date})</span></span>
+      const iconoTipo = r.tipo === 'sugestao' ? '💡' : '🐛';
+      row.innerHTML = `<span class="name" style="font-weight:400;font-size:13.5px;">${r.resuelto ? '✅' : '🔴'} ${iconoTipo} ${r.message} <span style="color:var(--cream-dim);font-size:11px;">(${r.date})</span></span>
         <span class="pts" style="color:${r.resuelto ? 'var(--teal-bright)' : 'var(--coral)'};">${r.resuelto ? 'Resolvido' : 'Pendente'}</span>`;
       misReportesLista.appendChild(row);
     });
@@ -863,7 +869,7 @@ async function eliminarAlumno(id, nombre){
   }
 }
 
-async function enviarReporte(studentId, studentName, mensaje){
+async function enviarReporte(studentId, studentName, mensaje, tipo){
   mensaje = mensaje.trim();
   if(!mensaje) return;
   try{
@@ -871,6 +877,7 @@ async function enviarReporte(studentId, studentName, mensaje){
       studentId: studentId || null,
       studentName: studentName || 'Aluno',
       message: mensaje,
+      tipo: tipo || 'problema',
       date: fechaHoy(),
       resuelto: false
     });
@@ -906,7 +913,8 @@ function renderReportes(){
   pendientes.forEach(r=>{
     const row = document.createElement('div');
     row.className = 'roster-item';
-    row.innerHTML = `<span class="name" style="font-weight:500;">🔴 <b>${r.studentName}</b> — ${r.message} <span style="color:var(--cream-dim);font-size:11px;">(${r.date})</span></span>
+    const iconoTipo = r.tipo === 'sugestao' ? '💡' : '🐛';
+    row.innerHTML = `<span class="name" style="font-weight:500;">🔴 ${iconoTipo} <b>${r.studentName}</b> — ${r.message} <span style="color:var(--cream-dim);font-size:11px;">(${r.date})</span></span>
       <span style="display:flex;gap:8px;">
         <button class="btn secondary" style="padding:5px 10px;font-size:11px;" data-resolver="${r.id}">Resolvido</button>
         <button class="btn danger" style="padding:5px 10px;font-size:11px;" data-borrar="${r.id}">Excluir</button>
@@ -920,7 +928,8 @@ function renderReportes(){
     const row = document.createElement('div');
     row.className = 'roster-item';
     row.style.opacity = '0.5';
-    row.innerHTML = `<span class="name" style="font-weight:400;">✅ ${r.studentName} — ${r.message}</span>
+    const iconoTipo = r.tipo === 'sugestao' ? '💡' : '🐛';
+    row.innerHTML = `<span class="name" style="font-weight:400;">✅ ${iconoTipo} ${r.studentName} — ${r.message}</span>
       <button class="btn danger" style="padding:5px 10px;font-size:11px;" data-borrar="${r.id}">Excluir</button>`;
     row.querySelector('[data-borrar]').onclick = (e)=> eliminarReporte(e.target.dataset.borrar);
     lista.appendChild(row);
@@ -1021,6 +1030,16 @@ document.getElementById('btn-guardar-nota').onclick = async ()=>{
   setTimeout(()=>{ btn.textContent = 'Salvar mensagem'; }, 1500);
 };
 
+function seleccionarTipoReporte(tipo){
+  tipoReporteSeleccionado = tipo;
+  const btnProblema = document.getElementById('btn-tipo-problema');
+  const btnSugestao = document.getElementById('btn-tipo-sugestao');
+  btnProblema.className = tipo === 'problema' ? 'btn coral' : 'btn secondary';
+  btnSugestao.className = tipo === 'sugestao' ? 'btn coral' : 'btn secondary';
+}
+document.getElementById('btn-tipo-problema').onclick = ()=> seleccionarTipoReporte('problema');
+document.getElementById('btn-tipo-sugestao').onclick = ()=> seleccionarTipoReporte('sugestao');
+
 document.getElementById('btn-enviar-reporte').onclick = async ()=>{
   const textarea = document.getElementById('input-reporte');
   const btn = document.getElementById('btn-enviar-reporte');
@@ -1028,10 +1047,10 @@ document.getElementById('btn-enviar-reporte').onclick = async ()=>{
   const id = alumnoFijo || select.value;
   const alumno = roster.find(s => s.id === id);
   if(!textarea.value.trim()) return;
-  await enviarReporte(id, alumno ? alumno.name : 'Aluno', textarea.value);
+  await enviarReporte(id, alumno ? alumno.name : 'Aluno', textarea.value, tipoReporteSeleccionado);
   textarea.value = '';
   btn.textContent = 'Enviado!';
-  setTimeout(()=>{ btn.textContent = 'Enviar relato'; }, 1500);
+  setTimeout(()=>{ btn.textContent = 'Enviar'; }, 1500);
 };
 
 document.getElementById('select-aluno').addEventListener('change', renderAluno);
