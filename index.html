@@ -278,7 +278,7 @@
       <p>Somente o professor pode adicionar pontos e gerenciar alunos.</p>
       <input type="password" id="input-pin" placeholder="PIN">
       <div><button class="btn coral" id="btn-desbloquear">Entrar</button></div>
-      <p class="sub" style="margin-top:14px;">PIN por defecto: 1234</p>
+      <p class="sub" style="margin-top:14px;">Só acessa quem ensina</p>
     </div>
 
     <div id="professor-contenido" class="hidden">
@@ -376,7 +376,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-const TEACHER_PIN = "1234";
+const TEACHER_PIN = "1379";
 let profesorDesbloqueado = false;
 
 const params = new URLSearchParams(window.location.search);
