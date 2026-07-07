@@ -105,6 +105,23 @@
   .roster-item .pts{font-family:'Space Mono',monospace;color:var(--gold);font-size:13px;margin-left:8px;}
   .lock-screen{text-align:center;padding:30px 10px;}
   .lock-screen p{color:var(--cream-dim);font-size:13.5px;margin:8px 0 18px;}
+
+  details.acordeao{background:var(--bg-panel);border:1px solid var(--line);border-radius:16px;margin-bottom:14px;overflow:hidden;}
+  details.acordeao summary{padding:18px 22px;cursor:pointer;font-family:'Baloo 2',sans-serif;font-weight:600;font-size:15.5px;color:var(--cream);list-style:none;display:flex;justify-content:space-between;align-items:center;gap:10px;}
+  details.acordeao summary::-webkit-details-marker{display:none;}
+  details.acordeao summary::after{content:'+';font-size:20px;color:var(--gold);flex-shrink:0;}
+  details.acordeao[open] summary::after{content:'–';}
+  details.acordeao summary:hover{background:var(--bg-panel-2);}
+  .acordeao-body{padding:2px 22px 22px;color:var(--cream-dim);font-size:14px;line-height:1.6;}
+  .acordeao-body h4{font-family:'Baloo 2',sans-serif;color:var(--gold);font-size:14.5px;margin:16px 0 8px;}
+  .acordeao-body h4:first-child{margin-top:4px;}
+  table.conj{width:100%;border-collapse:collapse;margin:8px 0 14px;font-size:13.5px;}
+  table.conj th{background:var(--teal-dark);color:var(--gold);text-align:left;padding:7px 10px;font-size:11px;text-transform:uppercase;letter-spacing:.04em;}
+  table.conj td{padding:7px 10px;border-bottom:1px solid var(--line);color:var(--cream);}
+  table.conj tr:last-child td{border-bottom:none;}
+  .regra-box{background:var(--teal-dark);border-left:3px solid var(--teal-bright);padding:10px 14px;border-radius:8px;margin:10px 0;font-size:13.5px;color:var(--cream);}
+  .exemplo{color:var(--teal-bright);font-size:13px;font-style:italic;}
+  .tag-cat{display:inline-block;background:var(--teal-dark);border:1px solid var(--line);border-radius:8px;padding:8px 12px;margin:3px;font-size:13px;color:var(--cream);}
   .lock-screen input{max-width:180px;margin:0 auto 12px;text-align:center;}
   ::placeholder{color:var(--cream-dim);opacity:.6;}
   .hidden{display:none !important;}
@@ -197,14 +214,223 @@
       </div>
 
       <div id="aba-material" class="hidden">
-        <div class="panel">
-          <div class="flexbetween" style="margin-bottom:12px;">
-            <p class="eyebrow" style="margin:0;">📚 Material de estudo</p>
-            <a href="https://sites.google.com/view/portugusbr/inicio" target="_blank" rel="noopener" class="btn secondary" style="text-decoration:none;font-size:12px;padding:7px 12px;">Abrir em nova aba ↗</a>
-          </div>
-          <div id="material-iframe-wrap" style="border-radius:12px;overflow:hidden;border:1px solid var(--line);background:var(--teal-dark);min-height:70vh;">
-          </div>
+
+        <div class="panel" style="background:linear-gradient(135deg, var(--bg-panel-2), var(--bg-panel));border-color:var(--gold);">
+          <p class="eyebrow" style="margin:0;">📚 Material de estudo</p>
+          <p class="sub" style="margin:8px 0 0;">Gramática, verbos e vocabulário essencial para praticar seu português. Toque em cada tópico para abrir.</p>
         </div>
+
+        <details class="acordeao">
+          <summary>🔤 Pronomes Pessoais</summary>
+          <div class="acordeao-body">
+            <p>No português do Brasil, no dia a dia, usamos principalmente <b>você / vocês</b> em vez de "tu / vós", que são mais formais ou regionais.</p>
+            <table class="conj">
+              <tr><th>Pronome</th><th>Uso</th></tr>
+              <tr><td>eu</td><td>1ª pessoa do singular</td></tr>
+              <tr><td>você</td><td>2ª pessoa (informal, o mais usado no Brasil)</td></tr>
+              <tr><td>ele / ela</td><td>3ª pessoa do singular</td></tr>
+              <tr><td>nós</td><td>1ª pessoa do plural</td></tr>
+              <tr><td>vocês</td><td>2ª pessoa do plural</td></tr>
+              <tr><td>eles / elas</td><td>3ª pessoa do plural</td></tr>
+            </table>
+            <div class="regra-box">💡 "Você" e "vocês" conjugam o verbo como se fossem 3ª pessoa (ele/eles), mesmo falando diretamente com alguém.<br><span class="exemplo">Você fala português. / Vocês falam português.</span></div>
+          </div>
+        </details>
+
+        <details class="acordeao">
+          <summary>🔵 Verbos Fundamentais (Presente)</summary>
+          <div class="acordeao-body">
+            <p>Estes são os verbos mais usados e a base para começar a falar. Preste atenção: eles são <b>irregulares</b>, ou seja, não seguem o padrão comum.</p>
+
+            <h4>SER (identidade, características permanentes)</h4>
+            <table class="conj">
+              <tr><td>eu</td><td>sou</td></tr>
+              <tr><td>você / ele / ela</td><td>é</td></tr>
+              <tr><td>nós</td><td>somos</td></tr>
+              <tr><td>vocês / eles / elas</td><td>são</td></tr>
+            </table>
+            <p class="exemplo">Eu sou professora. Ela é brasileira.</p>
+
+            <h4>ESTAR (estado temporário, localização)</h4>
+            <table class="conj">
+              <tr><td>eu</td><td>estou</td></tr>
+              <tr><td>você / ele / ela</td><td>está</td></tr>
+              <tr><td>nós</td><td>estamos</td></tr>
+              <tr><td>vocês / eles / elas</td><td>estão</td></tr>
+            </table>
+            <p class="exemplo">Eu estou cansado. Nós estamos em casa.</p>
+            <div class="regra-box">⚠️ SER vs ESTAR: use <b>ser</b> para o que é permanente (nome, profissão, nacionalidade) e <b>estar</b> para o que é temporário (humor, localização, estado).</div>
+
+            <h4>TER (posse, idade, existência)</h4>
+            <table class="conj">
+              <tr><td>eu</td><td>tenho</td></tr>
+              <tr><td>você / ele / ela</td><td>tem</td></tr>
+              <tr><td>nós</td><td>temos</td></tr>
+              <tr><td>vocês / eles / elas</td><td>têm</td></tr>
+            </table>
+            <p class="exemplo">Eu tenho 25 anos. Nós temos duas aulas hoje.</p>
+
+            <h4>IR (movimento, futuro próximo)</h4>
+            <table class="conj">
+              <tr><td>eu</td><td>vou</td></tr>
+              <tr><td>você / ele / ela</td><td>vai</td></tr>
+              <tr><td>nós</td><td>vamos</td></tr>
+              <tr><td>vocês / eles / elas</td><td>vão</td></tr>
+            </table>
+            <p class="exemplo">Eu vou ao mercado. Vamos estudar!</p>
+            <div class="regra-box">💡 "Ir + infinitivo" forma o futuro próximo, muito usado na fala. <span class="exemplo">Eu vou estudar amanhã.</span></div>
+
+            <h4>FAZER (ação, clima)</h4>
+            <table class="conj">
+              <tr><td>eu</td><td>faço</td></tr>
+              <tr><td>você / ele / ela</td><td>faz</td></tr>
+              <tr><td>nós</td><td>fazemos</td></tr>
+              <tr><td>vocês / eles / elas</td><td>fazem</td></tr>
+            </table>
+            <p class="exemplo">Eu faço exercícios. Faz calor hoje.</p>
+
+            <h4>PODER (possibilidade) e QUERER (desejo)</h4>
+            <table class="conj">
+              <tr><th>Pronome</th><th>Poder</th><th>Querer</th></tr>
+              <tr><td>eu</td><td>posso</td><td>quero</td></tr>
+              <tr><td>você / ele / ela</td><td>pode</td><td>quer</td></tr>
+              <tr><td>nós</td><td>podemos</td><td>queremos</td></tr>
+              <tr><td>vocês / eles / elas</td><td>podem</td><td>querem</td></tr>
+            </table>
+            <p class="exemplo">Eu posso te ajudar. Ela quer aprender português.</p>
+          </div>
+        </details>
+
+        <details class="acordeao">
+          <summary>⏳ Tempos Verbais e Verbos Regulares</summary>
+          <div class="acordeao-body">
+            <p>Os verbos regulares terminam em <b>-AR</b>, <b>-ER</b> ou <b>-IR</b>. Veja os modelos: falar, comer, partir.</p>
+
+            <h4>Presente do Indicativo (ações habituais, fatos)</h4>
+            <table class="conj">
+              <tr><th>Pronome</th><th>falAR</th><th>comER</th><th>partIR</th></tr>
+              <tr><td>eu</td><td>falo</td><td>como</td><td>parto</td></tr>
+              <tr><td>você/ele/ela</td><td>fala</td><td>come</td><td>parte</td></tr>
+              <tr><td>nós</td><td>falamos</td><td>comemos</td><td>partimos</td></tr>
+              <tr><td>vocês/eles/elas</td><td>falam</td><td>comem</td><td>partem</td></tr>
+            </table>
+
+            <h4>Pretérito Perfeito (ação concluída no passado)</h4>
+            <table class="conj">
+              <tr><th>Pronome</th><th>falAR</th><th>comER</th><th>partIR</th></tr>
+              <tr><td>eu</td><td>falei</td><td>comi</td><td>parti</td></tr>
+              <tr><td>você/ele/ela</td><td>falou</td><td>comeu</td><td>partiu</td></tr>
+              <tr><td>nós</td><td>falamos</td><td>comemos</td><td>partimos</td></tr>
+              <tr><td>vocês/eles/elas</td><td>falaram</td><td>comeram</td><td>partiram</td></tr>
+            </table>
+            <p class="exemplo">Ontem eu falei com o professor. Nós comemos feijoada no domingo.</p>
+
+            <h4>Pretérito Imperfeito (ação habitual ou contínua no passado)</h4>
+            <table class="conj">
+              <tr><th>Pronome</th><th>falAR</th><th>comER</th><th>partIR</th></tr>
+              <tr><td>eu</td><td>falava</td><td>comia</td><td>partia</td></tr>
+              <tr><td>você/ele/ela</td><td>falava</td><td>comia</td><td>partia</td></tr>
+              <tr><td>nós</td><td>falávamos</td><td>comíamos</td><td>partíamos</td></tr>
+              <tr><td>vocês/eles/elas</td><td>falavam</td><td>comiam</td><td>partiam</td></tr>
+            </table>
+            <p class="exemplo">Quando eu era criança, eu falava espanhol em casa.</p>
+
+            <h4>Futuro do Presente (o que vai acontecer)</h4>
+            <table class="conj">
+              <tr><th>Pronome</th><th>falAR</th><th>comER</th><th>partIR</th></tr>
+              <tr><td>eu</td><td>falarei</td><td>comerei</td><td>partirei</td></tr>
+              <tr><td>você/ele/ela</td><td>falará</td><td>comerá</td><td>partirá</td></tr>
+              <tr><td>nós</td><td>falaremos</td><td>comeremos</td><td>partiremos</td></tr>
+              <tr><td>vocês/eles/elas</td><td>falarão</td><td>comerão</td><td>partirão</td></tr>
+            </table>
+            <div class="regra-box">💡 Na fala do dia a dia, os brasileiros preferem o futuro próximo: <span class="exemplo">"eu vou falar"</span> em vez de <span class="exemplo">"eu falarei"</span>. O futuro simples é mais comum na escrita formal.</div>
+          </div>
+        </details>
+
+        <details class="acordeao">
+          <summary>⚠️ Falsos Amigos (Espanhol → Português)</summary>
+          <div class="acordeao-body">
+            <p>Palavras parecidas com o espanhol, mas com significado diferente — cuidado!</p>
+            <table class="conj">
+              <tr><th>Palavra (PT)</th><th>Parece... mas significa</th></tr>
+              <tr><td>rato</td><td>não é "momento", é o animal (mouse)</td></tr>
+              <tr><td>escritório</td><td>não é "oficina" de carros, é "office/escritório de trabalho"</td></tr>
+              <tr><td>sobrenome</td><td>não é "nome", é "apellido"</td></tr>
+              <tr><td>embaraçada</td><td>não é "grávida", é "envergonhada / com vergonha"</td></tr>
+              <tr><td>esquisito</td><td>não é "delicioso" (exquisito), é "estranho"</td></tr>
+              <tr><td>brincar</td><td>não é "saltar", é "jogar / se divertir como criança"</td></tr>
+              <tr><td>copo</td><td>não é o objeto de beber vinho grande, é o "vaso" de tomar água</td></tr>
+              <tr><td>taça</td><td>é a taça/cálice (de vinho), diferente de "copo"</td></tr>
+              <tr><td>largo</td><td>não é "comprido", é "largo/wide"; "comprido" é "long"</td></tr>
+              <tr><td>polvo</td><td>não é "pó" (poeira), é o animal (polvo/pulpo)</td></tr>
+              <tr><td>oficina</td><td>é onde conserta carros; "escritório" é onde se trabalha</td></tr>
+            </table>
+          </div>
+        </details>
+
+        <details class="acordeao">
+          <summary>🔊 Pronúncia e Sons Especiais</summary>
+          <div class="acordeao-body">
+            <h4>Sons nasais</h4>
+            <p>O português tem sons que não existem em espanhol — saem "pelo nariz".</p>
+            <table class="conj">
+              <tr><th>Grafia</th><th>Exemplo</th></tr>
+              <tr><td>ã</td><td>maçã, irmã</td></tr>
+              <tr><td>õe</td><td>não, coração</td></tr>
+              <tr><td>em / en (final)</td><td>também, bem</td></tr>
+              <tr><td>am (final, verbos)</td><td>eles falam</td></tr>
+            </table>
+
+            <h4>Letras e dígrafos especiais</h4>
+            <table class="conj">
+              <tr><th>Grafia</th><th>Som aproximado</th><th>Exemplo</th></tr>
+              <tr><td>lh</td><td>como "ll" argentino suave</td><td>mulher, trabalho</td></tr>
+              <tr><td>nh</td><td>como "ñ" em espanhol</td><td>tamanho, banho</td></tr>
+              <tr><td>ç</td><td>sempre som de "s"</td><td>maçã, coração</td></tr>
+              <tr><td>x</td><td>pode ser "ch", "s", "z" ou "ks" (varia!)</td><td>xícara (ch), próximo (s)</td></tr>
+              <tr><td>r (início de palavra)</td><td>como "h" aspirado</td><td>rato, carro</td></tr>
+            </table>
+            <div class="regra-box">💡 O "r" no início da palavra ou dobrado ("rr") soa parecido com o "j" espanhol ou um "h" forte — bem diferente do "r" espanhol.</div>
+          </div>
+        </details>
+
+        <details class="acordeao">
+          <summary>💬 Frases Úteis do Dia a Dia</summary>
+          <div class="acordeao-body">
+            <h4>Cumprimentos</h4>
+            <p>Oi! / Olá! — Bom dia! — Boa tarde! — Boa noite!<br>Tudo bem? / Como vai? — Tudo ótimo, e você?<br>Tchau! — Até logo! — Até amanhã!</p>
+
+            <h4>Na sala de aula</h4>
+            <p>Como se diz "..." em português? — Pode repetir, por favor? — Não entendi. — Como se escreve? — Pode falar mais devagar?</p>
+
+            <h4>Educação básica</h4>
+            <p>Por favor — Obrigado/a — De nada — Com licença — Desculpa</p>
+
+            <h4>Perguntas essenciais</h4>
+            <p>Qual é o seu nome? — De onde você é? — Quantos anos você tem? — O que você faz? — Onde você mora?</p>
+          </div>
+        </details>
+
+        <details class="acordeao">
+          <summary>📖 Vocabulário Básico</summary>
+          <div class="acordeao-body">
+            <h4>Números (0-10)</h4>
+            <p>zero, um, dois, três, quatro, cinco, seis, sete, oito, nove, dez</p>
+
+            <h4>Dias da semana</h4>
+            <p>segunda-feira, terça-feira, quarta-feira, quinta-feira, sexta-feira, sábado, domingo</p>
+
+            <h4>Cores</h4>
+            <p>vermelho, azul, verde, amarelo, preto, branco, roxo, laranja, rosa, cinza</p>
+
+            <h4>Família</h4>
+            <p>mãe, pai, irmão/irmã, avó/avô, filho/filha, tio/tia, primo/prima, esposo/esposa</p>
+
+            <h4>Comida do dia a dia</h4>
+            <p>arroz, feijão, carne, frango, peixe, fruta, legume, pão, queijo, café, suco, água</p>
+          </div>
+        </details>
+
       </div>
 
       <div id="aba-progresso">
@@ -448,8 +674,6 @@ let dicaIndex = 0;
 let dicaIntervalo = null;
 let carruselIniciado = false;
 let tipoReporteSeleccionado = 'problema';
-let materialCargado = false;
-
 function mostrarAba(aba){
   const btnProgresso = document.getElementById('btn-aba-progresso');
   const btnMaterial = document.getElementById('btn-aba-material');
@@ -461,11 +685,6 @@ function mostrarAba(aba){
     btnProgresso.className = 'btn secondary';
     abaMaterial.classList.remove('hidden');
     abaProgresso.classList.add('hidden');
-    if(!materialCargado){
-      const wrap = document.getElementById('material-iframe-wrap');
-      wrap.innerHTML = '<iframe src="https://sites.google.com/view/portugusbr/inicio" style="width:100%;height:70vh;border:none;display:block;" title="Material de português" loading="lazy"></iframe>';
-      materialCargado = true;
-    }
   } else {
     btnProgresso.className = 'btn coral';
     btnMaterial.className = 'btn secondary';
