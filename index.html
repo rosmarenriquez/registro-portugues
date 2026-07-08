@@ -677,7 +677,7 @@
       <p>Somente o professor pode adicionar pontos e gerenciar alunos.</p>
       <input type="password" id="input-pin" placeholder="PIN">
       <div><button class="btn coral" id="btn-desbloquear">Entrar</button></div>
-      <p class="sub" style="margin-top:14px;">Acesso restringido</p>
+      <p class="sub" style="margin-top:14px;">PIN por defecto: 1234</p>
     </div>
 
     <div id="professor-contenido" class="hidden">
@@ -782,14 +782,26 @@ const params = new URLSearchParams(window.location.search);
 const alumnoFijo = params.get('alumno'); // si viene en la URL, el alumno solo ve sus propios datos
 
 const NIVELES = [
-  {nombre:"Turista Brasileiro", emoji:"🌴", min:0, max:24},
-  {nombre:"Carioca Iniciante", emoji:"😊", min:25, max:49},
-  {nombre:"Embaixador do Rio", emoji:"🏅", min:50, max:74},
-  {nombre:"Paulistano Dedicado", emoji:"☕", min:75, max:99},
-  {nombre:"Explorador da Bahia", emoji:"🎭", min:100, max:124},
-  {nombre:"Mestre de Curitiba", emoji:"🌲", min:125, max:149},
-  {nombre:"Embaixador de Florianópolis", emoji:"🏝️", min:150, max:174},
-  {nombre:"Mestre do Português", emoji:"🔥", min:175, max:Infinity},
+  {nombre:"Turista Brasileiro", emoji:"🌴", min:0, max:19},
+  {nombre:"Carioca Iniciante", emoji:"😊", min:20, max:39},
+  {nombre:"Embaixador do Rio", emoji:"🏅", min:40, max:59},
+  {nombre:"Paulistano Dedicado", emoji:"☕", min:60, max:79},
+  {nombre:"Explorador da Bahia", emoji:"🎭", min:80, max:99},
+  {nombre:"Mestre de Curitiba", emoji:"🌲", min:100, max:119},
+  {nombre:"Embaixador de Florianópolis", emoji:"🏝️", min:120, max:139},
+  {nombre:"Pescador de Recife", emoji:"🎣", min:140, max:159},
+  {nombre:"Folião de Fortaleza", emoji:"🏖️", min:160, max:179},
+  {nombre:"Mineiro de Belo Horizonte", emoji:"⛰️", min:180, max:199},
+  {nombre:"Guardião de Brasília", emoji:"🏛️", min:200, max:219},
+  {nombre:"Explorador da Amazônia", emoji:"🌳", min:220, max:239},
+  {nombre:"Gaúcho de Porto Alegre", emoji:"🧉", min:240, max:259},
+  {nombre:"Andarilho de Natal", emoji:"🏜️", min:260, max:279},
+  {nombre:"Aventureiro de Foz do Iguaçu", emoji:"💧", min:280, max:299},
+  {nombre:"Historiador de Ouro Preto", emoji:"⛏️", min:300, max:319},
+  {nombre:"Navegador de Belém", emoji:"🌊", min:320, max:339},
+  {nombre:"Embaixador do Brasil", emoji:"👑", min:340, max:359},
+  {nombre:"Lenda do Português", emoji:"⭐", min:360, max:399},
+  {nombre:"Mestre do Português", emoji:"🔥", min:400, max:Infinity},
 ];
 
 const ACCIONES = [
@@ -963,8 +975,12 @@ function dibujarTrilha(totalPuntos){
   const svg = document.getElementById('svg-trilha');
   const n = NIVELES.length;
   const marginX = 40;
-  const width = 900 - marginX*2;
+  const espacoPorEstacao = 110;
+  const width = (n - 1) * espacoPorEstacao;
+  const viewBoxWidth = width + marginX * 2;
   const y = 55;
+  svg.setAttribute('viewBox', `0 0 ${viewBoxWidth} 130`);
+  svg.style.minWidth = Math.max(viewBoxWidth, 760) + 'px';
   const nivel = nivelDe(totalPuntos);
   let fraccion;
   if(nivel.idx === n-1){
