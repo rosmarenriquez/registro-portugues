@@ -211,6 +211,19 @@
       <div class="row" style="margin-bottom:16px;">
         <button class="btn coral" id="btn-aba-progresso">🏠 Meu progresso</button>
         <button class="btn secondary" id="btn-aba-material">📚 Material de estudo</button>
+        <button class="btn secondary" id="btn-aba-trello">🗂️ Trello</button>
+      </div>
+
+      <div id="aba-trello" class="hidden">
+        <div class="panel">
+          <div class="flexbetween" style="margin-bottom:12px;">
+            <p class="eyebrow" style="margin:0;">🗂️ Nosso Trello</p>
+            <a href="https://trello.com/b/NHaybQAs" target="_blank" rel="noopener" class="btn secondary" style="text-decoration:none;font-size:12px;padding:7px 12px;">Abrir em nova aba ↗</a>
+          </div>
+          <div style="border-radius:12px;overflow:hidden;border:1px solid var(--line);">
+            <iframe src="https://trello.com/b/NHaybQAs.html" style="width:100%;height:70vh;border:none;display:block;" title="Trello - Corujas" loading="lazy"></iframe>
+          </div>
+        </div>
       </div>
 
       <div id="aba-material" class="hidden">
@@ -633,11 +646,6 @@
         </table>
         <p class="empty hidden" id="historico-aluno-vacio">Você ainda não tem pontos registrados. Vai atrás do primeiro!</p>
       </div>
-      <div class="panel" style="background:linear-gradient(135deg, var(--bg-panel-2), var(--bg-panel));border-color:var(--teal-bright);">
-        <p class="eyebrow">🗂️ Nosso Trello</p>
-        <p class="sub" style="margin:0 0 14px;">Semanas, desafios e todo o cronograma do curso.</p>
-        <a href="https://trello.com/b/NHaybQAs" target="_blank" rel="noopener" class="btn secondary" style="display:inline-block;text-decoration:none;">Abrir Trello →</a>
-      </div>
 
       <div class="panel">
         <p class="eyebrow">🛠️ Fale com o professor</p>
@@ -816,22 +824,25 @@ let dicaIntervalo = null;
 let carruselIniciado = false;
 let tipoReporteSeleccionado = 'problema';
 function mostrarAba(aba){
-  const btnProgresso = document.getElementById('btn-aba-progresso');
-  const btnMaterial = document.getElementById('btn-aba-material');
-  const abaProgresso = document.getElementById('aba-progresso');
-  const abaMaterial = document.getElementById('aba-material');
-
-  if(aba === 'material'){
-    btnMaterial.className = 'btn coral';
-    btnProgresso.className = 'btn secondary';
-    abaMaterial.classList.remove('hidden');
-    abaProgresso.classList.add('hidden');
-  } else {
-    btnProgresso.className = 'btn coral';
-    btnMaterial.className = 'btn secondary';
-    abaProgresso.classList.remove('hidden');
-    abaMaterial.classList.add('hidden');
-  }
+  const botones = {
+    progresso: document.getElementById('btn-aba-progresso'),
+    material: document.getElementById('btn-aba-material'),
+    trello: document.getElementById('btn-aba-trello'),
+  };
+  const abas = {
+    progresso: document.getElementById('aba-progresso'),
+    material: document.getElementById('aba-material'),
+    trello: document.getElementById('aba-trello'),
+  };
+  Object.keys(botones).forEach(key=>{
+    if(key === aba){
+      botones[key].className = 'btn coral';
+      abas[key].classList.remove('hidden');
+    } else {
+      botones[key].className = 'btn secondary';
+      abas[key].classList.add('hidden');
+    }
+  });
 }
 
 
@@ -1440,6 +1451,7 @@ document.getElementById('btn-tipo-sugestao').onclick = ()=> seleccionarTipoRepor
 
 document.getElementById('btn-aba-progresso').onclick = ()=> mostrarAba('progresso');
 document.getElementById('btn-aba-material').onclick = ()=> mostrarAba('material');
+document.getElementById('btn-aba-trello').onclick = ()=> mostrarAba('trello');
 
 document.getElementById('btn-enviar-reporte').onclick = async ()=>{
   const textarea = document.getElementById('input-reporte');
