@@ -211,7 +211,6 @@
       <div class="row" style="margin-bottom:16px;">
         <button class="btn coral" id="btn-aba-progresso">🏠 Meu progresso</button>
         <button class="btn secondary" id="btn-aba-material">📚 Material de estudo</button>
-        <button class="btn secondary" id="btn-aba-trello">🗂️ Trello</button>
         <button class="btn secondary" id="btn-aba-cronograma">📅 Cronograma</button>
       </div>
 
@@ -221,18 +220,6 @@
           <p class="sub" style="margin:8px 0 0;">O conteúdo de cada semana, módulo por módulo. Toque para abrir.</p>
         </div>
         <div id="cronograma-lista"></div>
-      </div>
-
-      <div id="aba-trello" class="hidden">
-        <div class="panel">
-          <div class="flexbetween" style="margin-bottom:12px;">
-            <p class="eyebrow" style="margin:0;">🗂️ Nosso Trello</p>
-            <a href="https://trello.com/b/NHaybQAs" target="_blank" rel="noopener" class="btn secondary" style="text-decoration:none;font-size:12px;padding:7px 12px;">Abrir em nova aba ↗</a>
-          </div>
-          <div style="border-radius:12px;overflow:hidden;border:1px solid var(--line);">
-            <iframe src="https://trello.com/b/NHaybQAs.html" style="width:100%;height:70vh;border:none;display:block;" title="Trello - Corujas" loading="lazy"></iframe>
-          </div>
-        </div>
       </div>
 
       <div id="aba-material" class="hidden">
@@ -882,13 +869,11 @@ function mostrarAba(aba){
   const botones = {
     progresso: document.getElementById('btn-aba-progresso'),
     material: document.getElementById('btn-aba-material'),
-    trello: document.getElementById('btn-aba-trello'),
     cronograma: document.getElementById('btn-aba-cronograma'),
   };
   const abas = {
     progresso: document.getElementById('aba-progresso'),
     material: document.getElementById('aba-material'),
-    trello: document.getElementById('aba-trello'),
     cronograma: document.getElementById('aba-cronograma'),
   };
   Object.keys(botones).forEach(key=>{
@@ -1643,7 +1628,6 @@ document.getElementById('btn-tipo-sugestao').onclick = ()=> seleccionarTipoRepor
 
 document.getElementById('btn-aba-progresso').onclick = ()=> mostrarAba('progresso');
 document.getElementById('btn-aba-material').onclick = ()=> mostrarAba('material');
-document.getElementById('btn-aba-trello').onclick = ()=> mostrarAba('trello');
 document.getElementById('btn-aba-cronograma').onclick = ()=> mostrarAba('cronograma');
 
 document.getElementById('select-modulo-cronograma').addEventListener('change', cargarModuloCronogramaEditor);
