@@ -212,6 +212,15 @@
         <button class="btn coral" id="btn-aba-progresso">🏠 Meu progresso</button>
         <button class="btn secondary" id="btn-aba-material">📚 Material de estudo</button>
         <button class="btn secondary" id="btn-aba-trello">🗂️ Trello</button>
+        <button class="btn secondary" id="btn-aba-cronograma">📅 Cronograma</button>
+      </div>
+
+      <div id="aba-cronograma" class="hidden">
+        <div class="panel" style="background:linear-gradient(135deg, var(--bg-panel-2), var(--bg-panel));border-color:var(--gold);">
+          <p class="eyebrow" style="margin:0;">📅 Cronograma do Curso</p>
+          <p class="sub" style="margin:8px 0 0;">O conteúdo de cada semana, módulo por módulo. Toque para abrir.</p>
+        </div>
+        <div id="cronograma-lista"></div>
       </div>
 
       <div id="aba-trello" class="hidden">
@@ -723,6 +732,40 @@
       </div>
 
       <div class="panel">
+        <p class="eyebrow">📅 Gerenciar Cronograma</p>
+        <p class="sub" style="margin:8px 0 12px;">Elige el módulo y edita el contenido de cada semana. Se guarda por separado de los demás módulos.</p>
+        <div class="row" style="margin-bottom:12px;">
+          <button class="btn secondary" id="btn-seed-cronograma">🌱 Carregar conteúdo inicial (Rio + São Paulo)</button>
+        </div>
+        <select id="select-modulo-cronograma" style="margin-bottom:14px;">
+          <option value="rio">📍 Rio de Janeiro (Semanas 1-4)</option>
+          <option value="saopaulo">📍 São Paulo (Semanas 5-8)</option>
+          <option value="salvador">📍 Salvador (Semanas 9-12)</option>
+          <option value="curitiba">📍 Curitiba (Semanas 13-16)</option>
+          <option value="florianopolis">📍 Florianópolis (Semanas 17-20)</option>
+        </select>
+
+        <p class="sub" style="margin:0 0 4px;">Semana 1 do módulo</p>
+        <textarea id="input-cronograma-s1" rows="4" placeholder="Objetivo, conteúdo e desafio da primeira semana..." style="width:100%;background:var(--teal-dark);border:1px solid var(--line);color:var(--cream);font-family:'Inter',sans-serif;font-size:13.5px;padding:10px 12px;border-radius:10px;outline:none;resize:vertical;margin-bottom:10px;"></textarea>
+
+        <p class="sub" style="margin:0 0 4px;">Semana 2 do módulo</p>
+        <textarea id="input-cronograma-s2" rows="4" style="width:100%;background:var(--teal-dark);border:1px solid var(--line);color:var(--cream);font-family:'Inter',sans-serif;font-size:13.5px;padding:10px 12px;border-radius:10px;outline:none;resize:vertical;margin-bottom:10px;"></textarea>
+
+        <p class="sub" style="margin:0 0 4px;">Semana 3 do módulo</p>
+        <textarea id="input-cronograma-s3" rows="4" style="width:100%;background:var(--teal-dark);border:1px solid var(--line);color:var(--cream);font-family:'Inter',sans-serif;font-size:13.5px;padding:10px 12px;border-radius:10px;outline:none;resize:vertical;margin-bottom:10px;"></textarea>
+
+        <p class="sub" style="margin:0 0 4px;">Semana 4 do módulo</p>
+        <textarea id="input-cronograma-s4" rows="4" style="width:100%;background:var(--teal-dark);border:1px solid var(--line);color:var(--cream);font-family:'Inter',sans-serif;font-size:13.5px;padding:10px 12px;border-radius:10px;outline:none;resize:vertical;margin-bottom:10px;"></textarea>
+
+        <p class="sub" style="margin:0 0 4px;">🏆 Missão Final do módulo (opcional)</p>
+        <textarea id="input-cronograma-missao" rows="3" style="width:100%;background:var(--teal-dark);border:1px solid var(--line);color:var(--cream);font-family:'Inter',sans-serif;font-size:13.5px;padding:10px 12px;border-radius:10px;outline:none;resize:vertical;"></textarea>
+
+        <div class="row" style="margin-top:10px;">
+          <button class="btn coral" id="btn-guardar-cronograma">Salvar módulo</button>
+        </div>
+      </div>
+
+      <div class="panel">
         <div class="flexbetween">
           <p class="eyebrow" style="margin:0;">💰 Aviso de pagamento</p>
           <button class="btn secondary" id="btn-toggle-aviso-pago">Ativar</button>
@@ -840,11 +883,13 @@ function mostrarAba(aba){
     progresso: document.getElementById('btn-aba-progresso'),
     material: document.getElementById('btn-aba-material'),
     trello: document.getElementById('btn-aba-trello'),
+    cronograma: document.getElementById('btn-aba-cronograma'),
   };
   const abas = {
     progresso: document.getElementById('aba-progresso'),
     material: document.getElementById('aba-material'),
     trello: document.getElementById('aba-trello'),
+    cronograma: document.getElementById('aba-cronograma'),
   };
   Object.keys(botones).forEach(key=>{
     if(key === aba){
@@ -857,6 +902,136 @@ function mostrarAba(aba){
   });
 }
 
+
+
+const CRONOGRAMA_SEED = {
+  "rio": {
+    "semana1": "🎯 Objetivo da Aula\n\nAo final desta aula, você será capaz de:\n\n✅ Cumprimentar pessoas em português\n\n✅ Apresentar-se\n\n✅ Perguntar e responder informações básicas\n\n✅ Utilizar os pronomes pessoais\n\n✅ Utilizar o verbo SER em frases simples\n\n📚 Conteúdo da Aula\n\nSaudações\n\n- Olá\n- Oi\n- Bom dia\n- Boa tarde\n- Boa noite\n- Até logo\n- Até amanhã\n\nApresentações\n\n- Como você se chama?\n- Meu nome é...\n- Prazer em conhecê-lo(a)\n- Tudo bem?\n- Tudo ótimo!\n\nPronomes Pessoais\n\n- Eu\n- Você\n- Ele\n- Ela\n- Nós\n- Vocês\n- Eles\n- Elas\n\nVerbo SER\n\n- Eu sou\n- Você é\n- Ele é\n- Ela é\n- Nós somos\n- Vocês são\n\n🎯 Desafio 1 – Minha apresentação\n🎯 Objetivo\n\nDemonstrar que você consegue apresentar-se em português usando as expressões estudadas na Semana 1.\n\n📋 Instruções\n\nGrave um áudio ou vídeo de 30 a 60 segundos respondendo às seguintes perguntas:\n\n1. Como você se chama?\n2. De onde você é?\n3. Qual é a sua profissão?\n4. Por que você quer aprender português?\n\n📤 Entrega\n\nEnvie seu áudio ou vídeo no grupo de WhatsApp ou diretamente para o professor.\n\n🌟 Desafio Extra (Opcional)\n\nAdicione uma informação adicional:\n\n- Sua idade\n- Seu hobby favorito\n- Sua comida favorita\n- Seu esporte favorito\n\nExemplo:\n\nTenho 30 anos.\nMeu hobby favorito é andar de moto.",
+    "semana2": "🎯 Objetivo da Aula\n\nAo final desta aula, você será capaz de:\n\n✅ Perguntar informações pessoais.\n\n✅ Falar sobre nacionalidades e profissões.\n\n✅ Utilizar o verbo SER com mais confiança.\n\n✅ Fazer uma pequena entrevista em português.\n\n📚 Conteúdo da Aula\n\nNacionalidades\n\n- Mexicano(a)\n- Brasileiro(a)\n- Argentino(a)\n- Colombiano(a)\n- Chileno(a)\n- Peruano(a)\n\nProfissões\n\n- Professor(a)\n- Estudante\n- Médico(a)\n- Engenheiro(a)\n- Advogado(a)\n- Comerciante\n- Motorista\n\nPerguntas Básicas\n\n- Como você se chama?\n- De onde você é?\n- Qual é a sua profissão?\n- Você é estudante?\n- Você trabalha?\n\nRespostas\n\n- Meu nome é...\n- Sou do México.\n- Sou professor.\n- Sim, sou estudante.\n- Não, não trabalho.\n\nGramática\n\nVerbo SER (Revisão)\n\n- Eu sou\n- Você é\n- Ele é\n- Ela é\n- Nós somos\n- Vocês são\n- Eles são\n\n🎯 Desafio 2 – Entrevista\n🎯 Objetivo\n\nRealizar uma pequena entrevista em português utilizando as perguntas estudadas na Semana 2.\n\n📋 Instruções\n\nEntreviste um colega da turma em português.\n\nA entrevista deve conter pelo menos:\n\n✅ 3 perguntas\n\n✅ 3 respostas completas\n\n✅ Participação dos dois alunos\n\n🎤 Perguntas Sugeridas\n\nVocê pode utilizar estas perguntas:\n\n- Como você se chama?\n- De onde você é?\n- Qual é a sua profissão?\n- Você trabalha?\n- Você é estudante?\n- Você gosta de aprender português?\n\n📤 Entrega\n\nGrave um áudio ou vídeo curto.\n\nEnvie pelo WhatsApp.\n\n🌟 Desafio Extra (Opcional)\n\nFaça uma pergunta que não foi ensinada na aula.\n\nExemplo:\n\nQual é o seu hobby favorito?\n\nou\n\nQual é a sua comida favorita?",
+    "semana3": "🎯 Objetivo da Aula\n\nAo final desta aula você será capaz de:\n\n✅ Perguntar como alguém está.\n\n✅ Falar sobre emoções e estados físicos.\n\n✅ Utilizar o verbo ESTAR.\n\n✅ Diferenciar SER e ESTAR em situações básicas.\n\n📚 Conteúdo da Aula\n\nCumprimentos do Dia a Dia\n\n- Tudo bem?\n- Como você está?\n- Como vai?\n- E você?\n\nEmoções\n\n- Feliz\n- Triste\n- Animado(a)\n- Nervoso(a)\n- Calmo(a)\n- Preocupado(a)\n\nEstados Físicos\n\n- Cansado(a)\n- Com sono\n- Com fome\n- Com sede\n- Doente\n- Ocupado(a)\n\n📝 Gramática\n\nVerbo ESTAR\n\n- Eu estou\n- Você está\n- Ele está\n- Ela está\n- Nós estamos\n- Vocês estão\n- Eles estão\n\nSER ou ESTAR?\n\nSER\n\nCaracterísticas permanentes.\n\n- Sou professor.\n- Sou mexicano.\n- Sou estudante.\n\nESTAR\n\nEstados temporários.\n\n- Estou cansado.\n- Estou feliz.\n- Estou nervoso.\n\n🇧🇷 Expressões Muito Usadas no Brasil\n\n- Estou bem.\n- Estou ótimo!\n- Estou cansado hoje.\n- Estou com sono.\n- Estou tranquilo.\n\nEstas são expressões que os brasileiros usam todos os dias.\n\n🎯 Desafio 3 – Diário de emoções\n🎯 Objetivo\n\nPraticar o verbo ESTAR e o vocabulário de emoções em situações reais do dia a dia.\n\n📋 Instruções\n\nDurante 3 dias, escreva ou grave uma mensagem curta respondendo:\n\nComo você está hoje?\n\nPor que você está assim?\n\n📤 Entrega\n\nEscolha uma das opções:\n\nOpção A\n\nEnviar 3 mensagens escritas pelo WhatsApp.\n\nOpção B\n\nEnviar 3 áudios curtos.\n\nOpção C\n\nEnviar 1 áudio contando os 3 dias.\n\n🌟 Desafio Extra (Opcional)\n\nUtilize emoções diferentes nos três dias.\n\nExemplo:\n\n- Feliz\n- Cansado\n- Animado\n\nSem repetir.",
+    "semana4": "🎯 Objetivo da Aula\n\nAo final desta aula você será capaz de:\n\n✅ Apresentar-se com confiança.\n\n✅ Fazer perguntas básicas.\n\n✅ Utilizar SER e ESTAR corretamente.\n\n✅ Manter uma conversa simples em português.\n\n📚 Revisão Geral\n\nCumprimentos\n\n- Olá\n- Oi\n- Bom dia\n- Boa tarde\n- Boa noite\n- Até logo\n\nApresentações\n\n- Meu nome é...\n- Prazer em conhecê-lo(a)\n- Sou do México.\n- Sou professor(a).\n\nNacionalidades\n\n- Brasileiro(a)\n- Mexicano(a)\n- Argentino(a)\n- Colombiano(a)\n- Chileno(a)\n\nProfissões\n\n- Professor(a)\n- Estudante\n- Médico(a)\n- Engenheiro(a)\n- Advogado(a)\n\nEmoções e Estados\n\n- Feliz\n- Triste\n- Animado(a)\n- Cansado(a)\n- Com sono\n- Ocupado(a)\n\nSER x ESTAR\n\nSER\n\n- Sou professor.\n- Sou mexicano.\n- Somos amigos.\n\nESTAR\n\n- Estou feliz.\n- Estou cansado.\n- Estamos animados.",
+    "missaoFinal": "🎯 Objetivo\n\nUtilizar tudo o que foi aprendido no Módulo Rio de Janeiro em uma conversa real.\n\n📋 Missão\n\nImagine que você acabou de conhecer uma pessoa brasileira.\n\nVocê precisa conversar com ela durante 2 a 3 minutos usando português.\n\n🗣️ Temas que Devem Aparecer\n\nApresentação\n\n- Como você se chama?\n- Prazer em conhecê-lo(a).\n\nNacionalidade\n\n- De onde você é?\n\nProfissão\n\n- O que você faz?\n- Qual é a sua profissão?\n\nEmoções\n\n- Como você está hoje?\n\nEncerramento\n\n- Até logo.\n- Foi um prazer falar com você.\n\n📤 Entrega\n\nEscolha uma opção:\n\nOpção A\n\nConversa gravada com outro aluno.\n\nOpção B\n\nConversa gravada com o professor.\n\nOpção C\n\nConversa ao vivo durante a aula.\n\n🌟 Missão Extra (Opcional)\n\nAdicione uma pergunta não estudada no curso.\n\nExemplos:\n\n- Qual é o seu hobby favorito?\n- Você gosta de viajar?\n- Qual é sua comida favorita?"
+  },
+  "saopaulo": {
+    "semana1": "🎯 Objetivo da Aula\n\nAo final desta aula você será capaz de:\n\n✅ Falar sobre sua rotina diária.\n\n✅ Utilizar verbos comuns no presente.\n\n✅ Descrever atividades do seu dia.\n\n📚 Conteúdo da Aula\n\nVerbos Frequentes\n\n- Acordar\n- Levantar\n- Trabalhar\n- Estudar\n- Comer\n- Almoçar\n- Jantar\n- Dormir\n\nExpressões de Rotina\n\n- Todos os dias\n- De manhã\n- À tarde\n- À noite\n- Sempre\n- Às vezes\n- Nunca\n\n📝 Gramática\n\nPresente do Indicativo\n\nAcordar\n\n- Eu acordo\n- Você acorda\n- Ele acorda\n- Nós acordamos\n- Vocês acordam\n\nTrabalhar\n\n- Eu trabalho\n- Você trabalha\n- Ele trabalha\n- Nós trabalhamos\n- Vocês trabalham\n\n🇧🇷 Vocabulário da Aula\n\n- Café da manhã\n- Almoço\n- Jantar\n- Trabalho\n- Escola\n- Casa\n- Academia\n- Curso\n\n🎯 Desafio 4 – Meu Dia\n🎯 Objetivo\n\nDescrever sua rotina diária utilizando o vocabulário e os verbos aprendidos na Semana 5.\n\n📋 Instruções\n\nGrave um áudio ou vídeo de 1 a 2 minutos contando como é um dia normal na sua vida.\n\nVocê pode falar sobre:\n\n- A que horas você acorda.\n- O que faz de manhã.\n- O que faz à tarde.\n- O que faz à noite.\n- A que horas dorme.\n\n🗣️ Estrutura Sugerida\n\n🌅 Manhã\n\n- Eu acordo às...\n- Eu tomo café da manhã...\n- Eu trabalho / estudo...\n\n🌇 Tarde\n\n- Eu almoço às...\n- Eu trabalho / estudo...\n\n🌙 Noite\n\n- Eu janto às...\n- Eu descanso...\n- Eu durmo às...\n\n📤 Entrega\n\nEnviar:\n\n🎙️ Áudio\n\nou\n\n🎥 Vídeo\n\npelo WhatsApp.",
+    "semana2": "🎯 Objetivo da Aula\n\nAo final desta aula você será capaz de:\n\n✅ Dizer as horas em português.\n\n✅ Falar sobre horários e compromissos.\n\n✅ Descrever quando sai, chega ou volta de algum lugar.\n\n✅ Perguntar sobre horários.\n\n📚 Conteúdo da Aula\n\nAs Horas\n\n- 1:00 → É uma hora.\n- 2:00 → São duas horas.\n- 5:15 → São cinco e quinze.\n- 7:30 → São sete e meia.\n- 8:45 → São oito e quarenta e cinco.\n\nPerguntas Frequentes\n\n- Que horas são?\n- A que horas você acorda?\n- A que horas você trabalha?\n- A que horas você almoça?\n- A que horas você dorme?\n\nVerbos da Aula\n\nIr\n\n- Eu vou\n- Você vai\n- Nós vamos\n\nChegar\n\n- Eu chego\n- Você chega\n- Nós chegamos\n\nSair\n\n- Eu saio\n- Você sai\n- Nós saímos\n\nVoltar\n\n- Eu volto\n- Você volta\n- Nós voltamos\n\n🇧🇷 Vocabulário da Aula\n\n- Horário\n- Compromisso\n- Reunião\n- Aula\n- Trabalho\n- Academia\n- Casa\n- Escritório\n\n💬 Expressões Úteis\n\n- Chego às oito.\n- Saio às cinco.\n- Volto para casa às seis.\n- Tenho aula às sete.\n- Tenho uma reunião às nove.\n\n🎯 Desafio 5 – Minha Agenda\n🎯 Objetivo\n\nFalar sobre sua agenda e seus compromissos utilizando horários e atividades do dia a dia.\n\n📋 Instruções\n\nCrie uma agenda simples de um dia da sua semana e explique suas atividades em português.\n\nVocê pode escrever ou gravar um áudio.\n\n🗓️ Modelo\n\nSegunda-feira\n\n🕔 05:00 – Acordar\n\n☕ 06:00 – Tomar café da manhã\n\n💼 07:00 – Trabalhar\n\n🍽️ 12:00 – Almoçar\n\n📚 15:00 – Estudar português\n\n🏠 18:00 – Voltar para casa\n\n🌙 22:00 – Dormir\n\n📤 Entrega\n\nEscolha uma opção:\n\nOpção A\n\nEnviar uma imagem da sua agenda.\n\nOpção B\n\nEnviar um áudio explicando sua agenda.\n\nOpção C\n\nEnviar agenda + áudio.",
+    "semana3": "🎯 Objetivo da Aula\n\nAo final desta aula você será capaz de:\n\n✅ Falar sobre seus hobbies e interesses.\n\n✅ Perguntar sobre atividades favoritas.\n\n✅ Utilizar o verbo GOSTAR.\n\n✅ Descrever hábitos e atividades de lazer.\n\n📚 Conteúdo da Aula\n\nHobbies e Interesses\n\n- Ler\n- Assistir séries\n- Assistir filmes\n- Ouvir música\n- Viajar\n- Cozinhar\n- Jogar videogame\n- Praticar esportes\n- Andar de bicicleta\n- Tirar fotos\n\nVerbos da Aula\n\nGostar\n\n- Eu gosto\n- Você gosta\n- Nós gostamos\n\nLer\n\n- Eu leio\n- Você lê\n- Nós lemos\n\nAssistir\n\n- Eu assisto\n- Você assiste\n- Nós assistimos\n\nOuvir\n\n- Eu ouço\n- Você ouve\n- Nós ouvimos\n\nPraticar\n\n- Eu pratico\n- Você pratica\n- Nós praticamos\n\n📝 Gramática\n\nVerbo GOSTAR + DE\n\nExemplos:\n\n✅ Eu gosto de música.\n\n✅ Eu gosto de viajar.\n\n✅ Eu gosto de estudar português.\n\n✅ Nós gostamos de filmes.\n\nPerguntas Frequentes\n\n- O que você gosta de fazer?\n- Você gosta de viajar?\n- Qual é o seu hobby favorito?\n- Você pratica algum esporte?\n- Que tipo de música você gosta de ouvir?\n\n🇧🇷 Vocabulário da Aula\n\n- Hobby\n- Música\n- Filme\n- Série\n- Livro\n- Esporte\n- Academia\n- Praia\n- Viagem\n\n🎯 Desafio 6 – Meus Gostos e Interesses\n🎯 Objetivo\n\nFalar sobre seus hobbies, interesses e atividades favoritas utilizando o vocabulário aprendido na Semana 7.\n\n📋 Instruções\n\nGrave um áudio ou vídeo de 1 a 2 minutos respondendo às perguntas abaixo.\n\n🗣️ Perguntas Guia\n\n- O que você gosta de fazer no tempo livre?\n- Qual é o seu hobby favorito?\n- Você gosta de viajar?\n- Você gosta de praticar esportes?\n- Que tipo de música você gosta de ouvir?\n- Você gosta de ler ou assistir séries?\n\n📤 Entrega\n\nEscolha uma opção:\n\nOpção A\n\n🎙️ Áudio\n\nOpção B\n\n🎥 Vídeo\n\nOpção C\n\n🎤 Apresentação ao vivo durante a aula",
+    "semana4": "- Revisión y conversación guiada",
+    "missaoFinal": ""
+  }
+};
+
+const MODULOS_CRONOGRAMA = [
+  {id:'rio', cidade:'Rio de Janeiro', semanas:'Semanas 1-4', emoji:'📍'},
+  {id:'saopaulo', cidade:'São Paulo', semanas:'Semanas 5-8', emoji:'📍'},
+  {id:'salvador', cidade:'Salvador', semanas:'Semanas 9-12', emoji:'📍'},
+  {id:'curitiba', cidade:'Curitiba', semanas:'Semanas 13-16', emoji:'📍'},
+  {id:'florianopolis', cidade:'Florianópolis', semanas:'Semanas 17-20', emoji:'📍'},
+];
+
+let cronogramaData = {};
+let cronogramaModuloEditando = null;
+
+onSnapshot(collection(db, 'cronograma'), (snapshot)=>{
+  cronogramaData = {};
+  snapshot.docs.forEach(d => { cronogramaData[d.id] = d.data(); });
+  renderCronogramaAluno();
+});
+
+function renderCronogramaAluno(){
+  const lista = document.getElementById('cronograma-lista');
+  if(!lista) return;
+  lista.innerHTML = '';
+  MODULOS_CRONOGRAMA.forEach(m=>{
+    const dados = cronogramaData[m.id];
+    const details = document.createElement('details');
+    details.className = 'acordeao';
+    const summary = document.createElement('summary');
+    summary.textContent = `${m.emoji} ${m.cidade} — ${m.semanas}`;
+    details.appendChild(summary);
+    const body = document.createElement('div');
+    body.className = 'acordeao-body';
+
+    const semanas = dados ? [dados.semana1, dados.semana2, dados.semana3, dados.semana4] : ['', '', '', ''];
+    const temConteudo = semanas.some(s => s && s.trim() !== '');
+
+    if(!temConteudo){
+      body.innerHTML = '<p style="color:var(--cream-dim);">🚧 O professor ainda está preparando o conteúdo deste módulo. Volte em breve!</p>';
+    } else {
+      semanas.forEach((s, idx)=>{
+        if(s && s.trim() !== ''){
+          const h = document.createElement('h4');
+          h.textContent = `Semana ${idx+1}`;
+          body.appendChild(h);
+          const p = document.createElement('p');
+          p.style.whiteSpace = 'pre-wrap';
+          p.textContent = s;
+          body.appendChild(p);
+        }
+      });
+      if(dados && dados.missaoFinal && dados.missaoFinal.trim() !== ''){
+        const h = document.createElement('h4');
+        h.textContent = '🏆 Missão Final';
+        body.appendChild(h);
+        const p = document.createElement('p');
+        p.style.whiteSpace = 'pre-wrap';
+        p.textContent = dados.missaoFinal;
+        body.appendChild(p);
+      }
+    }
+    details.appendChild(body);
+    lista.appendChild(details);
+  });
+}
+
+function cargarModuloCronogramaEditor(){
+  const id = document.getElementById('select-modulo-cronograma').value;
+  cronogramaModuloEditando = id;
+  const dados = cronogramaData[id] || {};
+  document.getElementById('input-cronograma-s1').value = dados.semana1 || '';
+  document.getElementById('input-cronograma-s2').value = dados.semana2 || '';
+  document.getElementById('input-cronograma-s3').value = dados.semana3 || '';
+  document.getElementById('input-cronograma-s4').value = dados.semana4 || '';
+  document.getElementById('input-cronograma-missao').value = dados.missaoFinal || '';
+}
+
+async function guardarModuloCronograma(){
+  const id = document.getElementById('select-modulo-cronograma').value;
+  const modulo = MODULOS_CRONOGRAMA.find(m=>m.id===id);
+  const dados = {
+    cidade: modulo.cidade,
+    semanas: modulo.semanas,
+    semana1: document.getElementById('input-cronograma-s1').value,
+    semana2: document.getElementById('input-cronograma-s2').value,
+    semana3: document.getElementById('input-cronograma-s3').value,
+    semana4: document.getElementById('input-cronograma-s4').value,
+    missaoFinal: document.getElementById('input-cronograma-missao').value,
+  };
+  try{
+    await setDoc(doc(db, 'cronograma', id), dados, {merge:true});
+  }catch(e){
+    console.error('Error al guardar el cronograma', e);
+    alert('Não foi possível salvar. Verifique sua conexão.');
+  }
+}
+
+async function seedCronogramaInicial(){
+  const confirmado = confirm('Isso vai substituir o conteúdo atual dos módulos Rio de Janeiro e São Paulo pelo conteúdo original do Trello. Continuar?');
+  if(!confirmado) return;
+  try{
+    await setDoc(doc(db, 'cronograma', 'rio'), {
+      cidade:'Rio de Janeiro', semanas:'Semanas 1-4', ...CRONOGRAMA_SEED.rio
+    }, {merge:true});
+    await setDoc(doc(db, 'cronograma', 'saopaulo'), {
+      cidade:'São Paulo', semanas:'Semanas 5-8', ...CRONOGRAMA_SEED.saopaulo
+    }, {merge:true});
+    alert('Conteúdo carregado com sucesso!');
+    if(cronogramaModuloEditando) cargarModuloCronogramaEditor();
+  }catch(e){
+    console.error('Error al cargar el contenido inicial', e);
+    alert('Não foi possível carregar. Verifique sua conexão.');
+  }
+}
 
 let avisoPago = {activo:false, texto:''};
 onSnapshot(doc(db, 'config', 'general'), (snap)=>{
@@ -1188,6 +1363,7 @@ async function renderProfessor(){
   await renderRanking();
   renderReportes();
   actualizarControlAvisoPago();
+  if(!cronogramaModuloEditando) cargarModuloCronogramaEditor();
 }
 
 async function renderRanking(){
@@ -1468,6 +1644,16 @@ document.getElementById('btn-tipo-sugestao').onclick = ()=> seleccionarTipoRepor
 document.getElementById('btn-aba-progresso').onclick = ()=> mostrarAba('progresso');
 document.getElementById('btn-aba-material').onclick = ()=> mostrarAba('material');
 document.getElementById('btn-aba-trello').onclick = ()=> mostrarAba('trello');
+document.getElementById('btn-aba-cronograma').onclick = ()=> mostrarAba('cronograma');
+
+document.getElementById('select-modulo-cronograma').addEventListener('change', cargarModuloCronogramaEditor);
+document.getElementById('btn-guardar-cronograma').onclick = async ()=>{
+  const btn = document.getElementById('btn-guardar-cronograma');
+  await guardarModuloCronograma();
+  btn.textContent = 'Salvo!';
+  setTimeout(()=>{ btn.textContent = 'Salvar módulo'; }, 1500);
+};
+document.getElementById('btn-seed-cronograma').onclick = seedCronogramaInicial;
 
 document.getElementById('btn-enviar-reporte').onclick = async ()=>{
   const textarea = document.getElementById('input-reporte');
