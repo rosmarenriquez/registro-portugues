@@ -212,6 +212,7 @@
         <button class="btn coral" id="btn-aba-progresso">🏠 Meu progresso</button>
         <button class="btn secondary" id="btn-aba-material">📚 Material de estudo</button>
         <button class="btn secondary" id="btn-aba-cronograma">📅 Cronograma</button>
+        <button class="btn secondary" id="btn-aba-desafios">🎯 Desafios Semanais</button>
       </div>
 
       <div id="aba-cronograma" class="hidden">
@@ -220,6 +221,14 @@
           <p class="sub" style="margin:8px 0 0;">O conteúdo de cada semana, módulo por módulo. Toque para abrir.</p>
         </div>
         <div id="cronograma-lista"></div>
+      </div>
+
+      <div id="aba-desafios" class="hidden">
+        <div class="panel" style="background:linear-gradient(135deg, var(--bg-panel-2), var(--bg-panel));border-color:var(--coral);">
+          <p class="eyebrow" style="margin:0;">🎯 Desafios Semanais</p>
+          <p class="sub" style="margin:8px 0 0;">Um desafio para cada semana do curso — pratique seu português de verdade!</p>
+        </div>
+        <div id="desafios-lista"></div>
       </div>
 
       <div id="aba-material" class="hidden">
@@ -753,6 +762,22 @@
       </div>
 
       <div class="panel">
+        <p class="eyebrow">🎯 Gerenciar Desafios Semanais</p>
+        <p class="sub" style="margin:8px 0 12px;">Elige la semana y edita su desafío.</p>
+        <div class="row" style="margin-bottom:12px;">
+          <button class="btn secondary" id="btn-seed-desafios">🌱 Carregar os 20 desafios iniciais</button>
+        </div>
+        <select id="select-semana-desafio" style="margin-bottom:14px;"></select>
+        <p class="sub" style="margin:0 0 4px;">Título do desafio</p>
+        <input type="text" id="input-desafio-titulo" style="width:100%;background:var(--teal-dark);border:1px solid var(--line);color:var(--cream);font-family:'Inter',sans-serif;font-size:14px;padding:10px 12px;border-radius:10px;outline:none;margin-bottom:10px;">
+        <p class="sub" style="margin:0 0 4px;">Objetivo, instruções, entrega e desafio extra</p>
+        <textarea id="input-desafio-texto" rows="8" style="width:100%;background:var(--teal-dark);border:1px solid var(--line);color:var(--cream);font-family:'Inter',sans-serif;font-size:13.5px;padding:10px 12px;border-radius:10px;outline:none;resize:vertical;"></textarea>
+        <div class="row" style="margin-top:10px;">
+          <button class="btn coral" id="btn-guardar-desafio">Salvar desafio</button>
+        </div>
+      </div>
+
+      <div class="panel">
         <div class="flexbetween">
           <p class="eyebrow" style="margin:0;">💰 Aviso de pagamento</p>
           <button class="btn secondary" id="btn-toggle-aviso-pago">Ativar</button>
@@ -870,11 +895,13 @@ function mostrarAba(aba){
     progresso: document.getElementById('btn-aba-progresso'),
     material: document.getElementById('btn-aba-material'),
     cronograma: document.getElementById('btn-aba-cronograma'),
+    desafios: document.getElementById('btn-aba-desafios'),
   };
   const abas = {
     progresso: document.getElementById('aba-progresso'),
     material: document.getElementById('aba-material'),
     cronograma: document.getElementById('aba-cronograma'),
+    desafios: document.getElementById('aba-desafios'),
   };
   Object.keys(botones).forEach(key=>{
     if(key === aba){
@@ -1014,6 +1041,191 @@ async function seedCronogramaInicial(){
     if(cronogramaModuloEditando) cargarModuloCronogramaEditor();
   }catch(e){
     console.error('Error al cargar el contenido inicial', e);
+    alert('Não foi possível carregar. Verifique sua conexão.');
+  }
+}
+
+
+const DESAFIOS_SEED = {
+  "1": {
+    "titulo": "Minha apresentação",
+    "texto": "🎯 Objetivo\n\nDemonstrar que você consegue apresentar-se em português usando as expressões estudadas na Semana 1.\n\n📋 Instruções\n\nGrave um áudio ou vídeo de 30 a 60 segundos respondendo às seguintes perguntas:\n\n1. Como você se chama?\n2. De onde você é?\n3. Qual é a sua profissão?\n4. Por que você quer aprender português?\n\n📤 Entrega\n\nEnvie seu áudio ou vídeo no grupo de WhatsApp ou diretamente para o professor.\n\n🌟 Desafio Extra (Opcional)\n\nAdicione uma informação adicional:\n\n- Sua idade\n- Seu hobby favorito\n- Sua comida favorita\n- Seu esporte favorito\n\nExemplo:\n\nTenho 30 anos.\nMeu hobby favorito é andar de moto."
+  },
+  "2": {
+    "titulo": "Entrevista",
+    "texto": "🎯 Objetivo\n\nRealizar uma pequena entrevista em português utilizando as perguntas estudadas na Semana 2.\n\n📋 Instruções\n\nEntreviste um colega da turma em português.\n\nA entrevista deve conter pelo menos:\n\n✅ 3 perguntas\n\n✅ 3 respostas completas\n\n✅ Participação dos dois alunos\n\n🎤 Perguntas Sugeridas\n\nVocê pode utilizar estas perguntas:\n\n- Como você se chama?\n- De onde você é?\n- Qual é a sua profissão?\n- Você trabalha?\n- Você é estudante?\n- Você gosta de aprender português?\n\n📤 Entrega\n\nGrave um áudio ou vídeo curto.\n\nEnvie pelo WhatsApp.\n\n🌟 Desafio Extra (Opcional)\n\nFaça uma pergunta que não foi ensinada na aula.\n\nExemplo:\n\nQual é o seu hobby favorito?\n\nou\n\nQual é a sua comida favorita?"
+  },
+  "3": {
+    "titulo": "Diário de emoções",
+    "texto": "🎯 Objetivo\n\nPraticar o verbo ESTAR e o vocabulário de emoções em situações reais do dia a dia.\n\n📋 Instruções\n\nDurante 3 dias, escreva ou grave uma mensagem curta respondendo:\n\nComo você está hoje?\n\nPor que você está assim?\n\n📤 Entrega\n\nEscolha uma das opções:\n\nOpção A\n\nEnviar 3 mensagens escritas pelo WhatsApp.\n\nOpção B\n\nEnviar 3 áudios curtos.\n\nOpção C\n\nEnviar 1 áudio contando os 3 dias.\n\n🌟 Desafio Extra (Opcional)\n\nUtilize emoções diferentes nos três dias.\n\nExemplo:\n\n- Feliz\n- Cansado\n- Animado\n\nSem repetir."
+  },
+  "4": {
+    "titulo": "Minha Semana de Revisão",
+    "texto": "Objetivo\nConsolidar tudo o que você aprendeu nas Semanas 1 a 3: cumprimentos, apresentação, SER e ESTAR.\n\nInstruções\nDescreva um(a) colega da turma (real ou inventado) em 5 a 8 frases, usando:\n- O nome e de onde ele/ela é (SER)\n- A profissão dele/dela (SER)\n- Como ele/ela está hoje (ESTAR)\n- Uma característica permanente e uma temporária\n\nEntrega\nEscreva o texto ou grave um áudio de 1 minuto.\n\nDesafio Extra (Opcional)\nInclua uma pergunta que você faria para essa pessoa se a encontrasse na rua."
+  },
+  "5": {
+    "titulo": "Meu Dia",
+    "texto": "🎯 Objetivo\n\nDescrever sua rotina diária utilizando o vocabulário e os verbos aprendidos na Semana 5.\n\n📋 Instruções\n\nGrave um áudio ou vídeo de 1 a 2 minutos contando como é um dia normal na sua vida.\n\nVocê pode falar sobre:\n\n- A que horas você acorda.\n- O que faz de manhã.\n- O que faz à tarde.\n- O que faz à noite.\n- A que horas dorme.\n\n🗣️ Estrutura Sugerida\n\n🌅 Manhã\n\n- Eu acordo às...\n- Eu tomo café da manhã...\n- Eu trabalho / estudo...\n\n🌇 Tarde\n\n- Eu almoço às...\n- Eu trabalho / estudo...\n\n🌙 Noite\n\n- Eu janto às...\n- Eu descanso...\n- Eu durmo às...\n\n📤 Entrega\n\nEnviar:\n\n🎙️ Áudio\n\nou\n\n🎥 Vídeo\n\npelo WhatsApp."
+  },
+  "6": {
+    "titulo": "Minha Agenda",
+    "texto": "🎯 Objetivo\n\nFalar sobre sua agenda e seus compromissos utilizando horários e atividades do dia a dia.\n\n📋 Instruções\n\nCrie uma agenda simples de um dia da sua semana e explique suas atividades em português.\n\nVocê pode escrever ou gravar um áudio.\n\n🗓️ Modelo\n\nSegunda-feira\n\n🕔 05:00 – Acordar\n\n☕ 06:00 – Tomar café da manhã\n\n💼 07:00 – Trabalhar\n\n🍽️ 12:00 – Almoçar\n\n📚 15:00 – Estudar português\n\n🏠 18:00 – Voltar para casa\n\n🌙 22:00 – Dormir\n\n📤 Entrega\n\nEscolha uma opção:\n\nOpção A\n\nEnviar uma imagem da sua agenda.\n\nOpção B\n\nEnviar um áudio explicando sua agenda.\n\nOpção C\n\nEnviar agenda + áudio."
+  },
+  "7": {
+    "titulo": "Meus Gostos e Interesses",
+    "texto": "🎯 Objetivo\n\nFalar sobre seus hobbies, interesses e atividades favoritas utilizando o vocabulário aprendido na Semana 7.\n\n📋 Instruções\n\nGrave um áudio ou vídeo de 1 a 2 minutos respondendo às perguntas abaixo.\n\n🗣️ Perguntas Guia\n\n- O que você gosta de fazer no tempo livre?\n- Qual é o seu hobby favorito?\n- Você gosta de viajar?\n- Você gosta de praticar esportes?\n- Que tipo de música você gosta de ouvir?\n- Você gosta de ler ou assistir séries?\n\n📤 Entrega\n\nEscolha uma opção:\n\nOpção A\n\n🎙️ Áudio\n\nOpção B\n\n🎥 Vídeo\n\nOpção C\n\n🎤 Apresentação ao vivo durante a aula"
+  },
+  "8": {
+    "titulo": "Minha Rotina Completa",
+    "texto": "Objetivo\nUnir tudo o que você praticou no módulo São Paulo: rotina, horários e gostos pessoais.\n\nInstruções\nGrave um áudio ou vídeo de 2 minutos contando um dia normal da sua semana: a que horas acorda, o que faz de manhã, tarde e noite, e o que gosta de fazer no tempo livre.\n\nEntrega\nÁudio ou vídeo pelo WhatsApp.\n\nDesafio Extra (Opcional)\nCompare seu dia de semana com o seu fim de semana. O que muda?"
+  },
+  "9": {
+    "titulo": "Minha Primeira Vez",
+    "texto": "Objetivo\nPraticar o Pretérito Perfeito contando uma experiência marcante da sua vida.\n\nInstruções\nGrave um áudio de 1 a 2 minutos contando a primeira vez que você fez algo importante (viajou sozinho/a, morou fora, comeu algo novo, aprendeu algo difícil, etc.), usando verbos no passado.\n\nEntrega\nÁudio ou vídeo pelo WhatsApp.\n\nDesafio Extra (Opcional)\nInclua pelo menos 2 conectores de tempo: depois, então, no final, primeiro."
+  },
+  "10": {
+    "titulo": "Como Era Minha Infância",
+    "texto": "Objetivo\nPraticar o Pretérito Imperfeito descrevendo hábitos e situações do passado.\n\nInstruções\nEscreva ou grave 5 a 8 frases descrevendo como era sua vida quando você era criança: onde morava, o que gostava de fazer, como era sua família, sua escola.\n\nEntrega\nTexto escrito ou áudio curto.\n\nDesafio Extra (Opcional)\nCompare: \"Antes eu... mas agora eu...\" usando imperfeito e presente juntos."
+  },
+  "11": {
+    "titulo": "Um Dia Inesquecível",
+    "texto": "Objetivo\nCombinar Pretérito Perfeito e Imperfeito para narrar uma lembrança especial.\n\nInstruções\nConte uma história curta sobre um dia inesquecível (uma viagem, uma festa, um encontro especial). Use o imperfeito para descrever a cena (como estava o tempo, como você se sentia) e o perfeito para as ações principais (o que aconteceu).\n\nEntrega\nÁudio ou vídeo de até 2 minutos.\n\nDesafio Extra (Opcional)\nTermine sua história com uma frase sobre como você se sente ao lembrar desse dia hoje."
+  },
+  "12": {
+    "titulo": "Entrevista sobre o Passado",
+    "texto": "Objetivo\nRevisar todo o módulo Salvador praticando perguntas e respostas sobre o passado.\n\nInstruções\nEntreviste um(a) colega (ou o professor) com pelo menos 5 perguntas sobre o passado dele/dela: infância, primeira viagem, uma memória feliz, algo que mudou na vida dele/dela.\n\nEntrega\nGrave a entrevista em áudio ou vídeo, ou apresente ao vivo na aula.\n\nDesafio Extra (Opcional)\nTermine perguntando: \"O que você aprendeu com essa experiência?\" "
+  },
+  "13": {
+    "titulo": "Descreva uma Pessoa",
+    "texto": "Objetivo\nPraticar vocabulário de descrição física e de personalidade.\n\nInstruções\nEscolha uma pessoa (real, famosa ou inventada) e descreva-a em pelo menos 8 frases: aparência física, personalidade, o que ela gosta de fazer, como ela é com os outros.\n\nEntrega\nTexto escrito ou áudio de 1 a 2 minutos.\n\nDesafio Extra (Opcional)\nAdicione uma comparação: \"Ele/ela é mais... do que...\" "
+  },
+  "14": {
+    "titulo": "Descreva um Lugar",
+    "texto": "Objetivo\nPraticar descrição de lugares e uso de comparativos.\n\nInstruções\nDescreva um lugar que você ama (sua cidade, uma praia, um restaurante, sua casa). Fale sobre como ele é, o que tem lá, e por que é especial para você.\n\nEntrega\nÁudio, vídeo ou texto escrito.\n\nDesafio Extra (Opcional)\nCompare esse lugar com outro: \"Aqui é mais tranquilo do que...\" "
+  },
+  "15": {
+    "titulo": "Conte uma História Curta",
+    "texto": "Objetivo\nPraticar narração usando conectores de sequência temporal.\n\nInstruções\nInvente ou conte uma história curta (real ou fictícia) com começo, meio e fim. Use conectores como: primeiro, depois, em seguida, finalmente.\n\nEntrega\nÁudio ou vídeo de 1 a 2 minutos.\n\nDesafio Extra (Opcional)\nAdicione um final surpreendente à sua história."
+  },
+  "16": {
+    "titulo": "Minha Cidade Favorita",
+    "texto": "Objetivo\nRevisar todo o módulo Curitiba combinando descrição e narração.\n\nInstruções\nApresente uma cidade (onde você mora, ou uma que visitou). Descreva como ela é, conte uma experiência que você viveu lá, e explique por que a recomendaria.\n\nEntrega\nÁudio, vídeo ou apresentação ao vivo na aula.\n\nDesafio Extra (Opcional)\nInclua uma dica para quem for visitar essa cidade pela primeira vez."
+  },
+  "17": {
+    "titulo": "Meus Planos para o Próximo Ano",
+    "texto": "Objetivo\nPraticar o futuro (ir + infinitivo e futuro do presente) falando de planos pessoais.\n\nInstruções\nFale sobre 3 a 5 planos que você tem para o próximo ano: pessoais, profissionais ou de estudos. Use \"eu vou...\" e, se conseguir, também o futuro simples (\"eu farei...\").\n\nEntrega\nÁudio ou vídeo de 1 a 2 minutos.\n\nDesafio Extra (Opcional)\nExplique por que esse plano é importante para você."
+  },
+  "18": {
+    "titulo": "Se Eu Pudesse Viajar...",
+    "texto": "Objetivo\nPraticar vocabulário de viagens e planejamento usando o futuro.\n\nInstruções\nPlaneje uma viagem imaginária: para onde você iria, o que levaria, o que gostaria de conhecer, com quem viajaria. Descreva o roteiro de 3 dias.\n\nEntrega\nTexto escrito, áudio ou vídeo.\n\nDesafio Extra (Opcional)\nInclua uma comida típica do lugar que você gostaria de experimentar."
+  },
+  "19": {
+    "titulo": "Entrevista do Futuro",
+    "texto": "Objetivo\nPraticar perguntas e respostas sobre metas e sonhos futuros.\n\nInstruções\nEntreviste um(a) colega com perguntas como: O que você quer fazer daqui a 5 anos? Onde você gostaria de morar? Que sonho você quer realizar?\n\nEntrega\nÁudio, vídeo ou apresentação ao vivo.\n\nDesafio Extra (Opcional)\nPergunte também: \"O que você está fazendo hoje para chegar lá?\" "
+  },
+  "20": {
+    "titulo": "Missão Final do Curso – Minha Jornada em Português",
+    "texto": "Objetivo\nCelebrar tudo o que você aprendeu durante as 20 semanas, usando presente, passado e futuro juntos.\n\nInstruções\nGrave um vídeo ou áudio de 3 a 5 minutos contando sua jornada aprendendo português:\n- Quem você é (presente)\n- Como você era quando começou o curso e o que aprendeu (passado)\n- O que você pretende fazer com o português a partir de agora (futuro)\n\nEntrega\nVídeo, áudio ou apresentação ao vivo para a turma.\n\nDesafio Extra (Opcional)\nTermine com uma frase inteiramente em português sobre o que o português significa para você agora. Parabéns por chegar até aqui! 🎉🇧🇷"
+  }
+};
+
+let desafiosData = {};
+let desafioSemanaEditando = null;
+
+onSnapshot(collection(db, 'desafios'), (snapshot)=>{
+  desafiosData = {};
+  snapshot.docs.forEach(d => { desafiosData[d.id] = d.data(); });
+  renderDesafiosAluno();
+});
+
+function moduloDaSemana(numero){
+  if(numero <= 4) return '📍 Rio de Janeiro';
+  if(numero <= 8) return '📍 São Paulo';
+  if(numero <= 12) return '📍 Salvador';
+  if(numero <= 16) return '📍 Curitiba';
+  return '📍 Florianópolis';
+}
+
+function renderDesafiosAluno(){
+  const lista = document.getElementById('desafios-lista');
+  if(!lista) return;
+  lista.innerHTML = '';
+  for(let i=1; i<=20; i++){
+    const dados = desafiosData[String(i)];
+    const details = document.createElement('details');
+    details.className = 'acordeao';
+    const summary = document.createElement('summary');
+    const titulo = dados && dados.titulo ? dados.titulo : '(ainda não definido)';
+    summary.textContent = `🎯 Semana ${i} — ${titulo}`;
+    details.appendChild(summary);
+    const body = document.createElement('div');
+    body.className = 'acordeao-body';
+    const tagModulo = document.createElement('p');
+    tagModulo.className = 'exemplo';
+    tagModulo.style.marginTop = '0';
+    tagModulo.textContent = moduloDaSemana(i);
+    body.appendChild(tagModulo);
+    if(dados && dados.texto && dados.texto.trim() !== ''){
+      const p = document.createElement('p');
+      p.style.whiteSpace = 'pre-wrap';
+      p.textContent = dados.texto;
+      body.appendChild(p);
+    } else {
+      const p = document.createElement('p');
+      p.style.color = 'var(--cream-dim)';
+      p.textContent = '🚧 O professor ainda está preparando este desafio.';
+      body.appendChild(p);
+    }
+    details.appendChild(body);
+    lista.appendChild(details);
+  }
+}
+
+function poblarSelectSemanaDesafio(){
+  const select = document.getElementById('select-semana-desafio');
+  select.innerHTML = '';
+  for(let i=1; i<=20; i++){
+    const opt = document.createElement('option');
+    opt.value = i;
+    opt.textContent = `Semana ${i} (${moduloDaSemana(i)})`;
+    select.appendChild(opt);
+  }
+}
+
+function cargarDesafioEditor(){
+  const num = document.getElementById('select-semana-desafio').value;
+  desafioSemanaEditando = num;
+  const dados = desafiosData[num] || {};
+  document.getElementById('input-desafio-titulo').value = dados.titulo || '';
+  document.getElementById('input-desafio-texto').value = dados.texto || '';
+}
+
+async function guardarDesafio(){
+  const num = document.getElementById('select-semana-desafio').value;
+  const dados = {
+    numero: parseInt(num, 10),
+    titulo: document.getElementById('input-desafio-titulo').value,
+    texto: document.getElementById('input-desafio-texto').value,
+  };
+  try{
+    await setDoc(doc(db, 'desafios', num), dados, {merge:true});
+  }catch(e){
+    console.error('Error al guardar el desafío', e);
+    alert('Não foi possível salvar. Verifique sua conexão.');
+  }
+}
+
+async function seedDesafiosIniciais(){
+  const confirmado = confirm('Isso vai substituir o conteúdo atual dos 20 desafios pelo conteúdo inicial sugerido. Continuar?');
+  if(!confirmado) return;
+  try{
+    for(const num of Object.keys(DESAFIOS_SEED)){
+      await setDoc(doc(db, 'desafios', num), {numero: parseInt(num,10), ...DESAFIOS_SEED[num]}, {merge:true});
+    }
+    alert('Desafios carregados com sucesso!');
+    if(desafioSemanaEditando) cargarDesafioEditor();
+  }catch(e){
+    console.error('Error al cargar los desafíos iniciales', e);
     alert('Não foi possível carregar. Verifique sua conexão.');
   }
 }
@@ -1349,6 +1561,7 @@ async function renderProfessor(){
   renderReportes();
   actualizarControlAvisoPago();
   if(!cronogramaModuloEditando) cargarModuloCronogramaEditor();
+  if(!desafioSemanaEditando) cargarDesafioEditor();
 }
 
 async function renderRanking(){
@@ -1629,6 +1842,7 @@ document.getElementById('btn-tipo-sugestao').onclick = ()=> seleccionarTipoRepor
 document.getElementById('btn-aba-progresso').onclick = ()=> mostrarAba('progresso');
 document.getElementById('btn-aba-material').onclick = ()=> mostrarAba('material');
 document.getElementById('btn-aba-cronograma').onclick = ()=> mostrarAba('cronograma');
+document.getElementById('btn-aba-desafios').onclick = ()=> mostrarAba('desafios');
 
 document.getElementById('select-modulo-cronograma').addEventListener('change', cargarModuloCronogramaEditor);
 document.getElementById('btn-guardar-cronograma').onclick = async ()=>{
@@ -1638,6 +1852,16 @@ document.getElementById('btn-guardar-cronograma').onclick = async ()=>{
   setTimeout(()=>{ btn.textContent = 'Salvar módulo'; }, 1500);
 };
 document.getElementById('btn-seed-cronograma').onclick = seedCronogramaInicial;
+
+poblarSelectSemanaDesafio();
+document.getElementById('select-semana-desafio').addEventListener('change', cargarDesafioEditor);
+document.getElementById('btn-guardar-desafio').onclick = async ()=>{
+  const btn = document.getElementById('btn-guardar-desafio');
+  await guardarDesafio();
+  btn.textContent = 'Salvo!';
+  setTimeout(()=>{ btn.textContent = 'Salvar desafio'; }, 1500);
+};
+document.getElementById('btn-seed-desafios').onclick = seedDesafiosIniciais;
 
 document.getElementById('btn-enviar-reporte').onclick = async ()=>{
   const textarea = document.getElementById('input-reporte');
