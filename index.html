@@ -213,6 +213,7 @@
         <button class="btn secondary" id="btn-aba-material">📚 Material de estudo</button>
         <button class="btn secondary" id="btn-aba-cronograma">📅 Cronograma</button>
         <button class="btn secondary" id="btn-aba-desafios">🎯 Desafios Semanais</button>
+        <button class="btn secondary" id="btn-aba-jogo">🎮 Jogo</button>
       </div>
 
       <div id="aba-cronograma" class="hidden">
@@ -229,6 +230,30 @@
           <p class="sub" style="margin:8px 0 0;">Um desafio para cada semana do curso — pratique seu português de verdade!</p>
         </div>
         <div id="desafios-lista"></div>
+      </div>
+
+      <div id="aba-jogo" class="hidden">
+        <div class="panel" style="text-align:center;">
+          <p class="eyebrow" style="margin-bottom:4px;">🎮 Adivinha a Palavra</p>
+          <p class="sub" style="margin:0 0 16px;">Leia a pista e escolha a palavra certa em português!</p>
+
+          <div class="row" style="justify-content:center;gap:22px;margin-bottom:16px;">
+            <span class="badge" id="jogo-pontuacao">⭐ 0</span>
+            <span class="badge" id="jogo-sequencia" style="color:var(--coral);">🔥 0</span>
+          </div>
+
+          <div id="jogo-area">
+            <div style="background:var(--teal-dark);border:1px solid var(--line);border-radius:14px;padding:22px 18px;margin-bottom:18px;min-height:64px;display:flex;align-items:center;justify-content:center;">
+              <p id="jogo-pista" style="margin:0;font-size:16px;line-height:1.5;"></p>
+            </div>
+            <div id="jogo-opciones" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;max-width:480px;margin:0 auto;"></div>
+            <p id="jogo-feedback" style="min-height:24px;margin:14px 0 0;font-size:14px;font-weight:600;"></p>
+          </div>
+
+          <div class="row" style="justify-content:center;margin-top:10px;">
+            <button class="btn secondary" id="btn-jogo-reiniciar">🔄 Reiniciar</button>
+          </div>
+        </div>
       </div>
 
       <div id="aba-material" class="hidden">
@@ -909,6 +934,111 @@ let dicaIndex = 0;
 let dicaIntervalo = null;
 let carruselIniciado = false;
 const HISTORICO_POR_PAGINA = 10;
+
+const JOGO_PERGUNTAS = [
+  {pista:"Animal doméstico que faz 'miau'", opcoes:["gato","cachorro","pássaro","peixe"], correta:"gato"},
+  {pista:"Cor do céu num dia sem nuvens", opcoes:["vermelho","azul","verde","preto"], correta:"azul"},
+  {pista:"Refeição que fazemos pela manhã", opcoes:["almoço","jantar","café da manhã","lanche"], correta:"café da manhã"},
+  {pista:"Lugar onde compramos frutas e legumes", opcoes:["farmácia","mercado","escola","hospital"], correta:"mercado"},
+  {pista:"Dia depois de domingo", opcoes:["sábado","segunda-feira","terça-feira","sexta-feira"], correta:"segunda-feira"},
+  {pista:"Pessoa que ensina numa escola", opcoes:["médico","professor","motorista","cozinheiro"], correta:"professor"},
+  {pista:"Bebida quente feita com grãos torrados", opcoes:["suco","água","café","leite"], correta:"café"},
+  {pista:"Membro do corpo usado para andar", opcoes:["mão","braço","perna","orelha"], correta:"perna"},
+  {pista:"Estação do ano mais quente", opcoes:["inverno","verão","outono","primavera"], correta:"verão"},
+  {pista:"Parte da casa onde cozinhamos", opcoes:["quarto","banheiro","cozinha","sala"], correta:"cozinha"},
+  {pista:"Verbo que significa 'ir a algum lugar caminhando rápido'", opcoes:["dormir","correr","comer","ouvir"], correta:"correr"},
+  {pista:"Fruta amarela e curvada", opcoes:["maçã","banana","uva","morango"], correta:"banana"},
+  {pista:"Número depois do nove", opcoes:["oito","dez","onze","sete"], correta:"dez"},
+  {pista:"Animal que voa e faz ninho", opcoes:["cachorro","pássaro","gato","peixe"], correta:"pássaro"},
+  {pista:"Contrário de 'grande'", opcoes:["pequeno","alto","forte","rápido"], correta:"pequeno"},
+  {pista:"Peça de roupa usada nos pés", opcoes:["camisa","sapato","boné","calça"], correta:"sapato"},
+  {pista:"Filho do meu irmão", opcoes:["primo","sobrinho","neto","tio"], correta:"sobrinho"},
+  {pista:"Lugar onde tratamos de doenças", opcoes:["escola","hospital","mercado","banco"], correta:"hospital"},
+  {pista:"Verbo usado para expressar posse: 'eu ___ um carro'", opcoes:["sou","estou","tenho","vou"], correta:"tenho"},
+  {pista:"Mês em que começa o ano", opcoes:["dezembro","janeiro","fevereiro","março"], correta:"janeiro"},
+  {pista:"Contrário de 'quente'", opcoes:["frio","seco","molhado","escuro"], correta:"frio"},
+  {pista:"Animal conhecido como 'melhor amigo do homem'", opcoes:["gato","cachorro","cavalo","coelho"], correta:"cachorro"},
+  {pista:"Onde guardamos dinheiro e fazemos transferências", opcoes:["banco","escola","farmácia","igreja"], correta:"banco"},
+  {pista:"Última refeição do dia", opcoes:["café da manhã","almoço","jantar","lanche"], correta:"jantar"},
+  {pista:"Cor da bandeira do Brasil (a que tem mais área)", opcoes:["azul","amarelo","verde","branco"], correta:"verde"},
+  {pista:"Verbo: 'você ___ falar mais devagar?' (pedido educado)", opcoes:["pode","quer","faz","vai"], correta:"pode"},
+  {pista:"Parte do rosto usada para ver", opcoes:["nariz","boca","olho","orelha"], correta:"olho"},
+  {pista:"Sentimento de falta de alguém ou algo, típico do Brasil", opcoes:["saudade","raiva","medo","tédio"], correta:"saudade"},
+  {pista:"Palavra usada para pedir desculpa", opcoes:["obrigado","desculpa","de nada","tchau"], correta:"desculpa"},
+  {pista:"Meio de transporte que anda sobre trilhos", opcoes:["ônibus","carro","trem","bicicleta"], correta:"trem"},
+];
+
+let jogoIndiceAtual = null;
+let jogoPontuacao = 0;
+let jogoSequencia = 0;
+let jogoRespondendo = false;
+let jogoPerguntasUsadas = [];
+
+function jogoNovaPergunta(){
+  jogoRespondendo = true;
+  document.getElementById('jogo-feedback').textContent = '';
+  if(jogoPerguntasUsadas.length >= JOGO_PERGUNTAS.length) jogoPerguntasUsadas = [];
+  let idx;
+  do { idx = Math.floor(Math.random() * JOGO_PERGUNTAS.length); }
+  while(jogoPerguntasUsadas.includes(idx) && jogoPerguntasUsadas.length < JOGO_PERGUNTAS.length);
+  jogoPerguntasUsadas.push(idx);
+  jogoIndiceAtual = idx;
+  const pergunta = JOGO_PERGUNTAS[idx];
+
+  document.getElementById('jogo-pista').textContent = pergunta.pista;
+  const opcoesEmbaralhadas = [...pergunta.opcoes].sort(()=> Math.random() - 0.5);
+  const wrap = document.getElementById('jogo-opciones');
+  wrap.innerHTML = '';
+  opcoesEmbaralhadas.forEach(op=>{
+    const btn = document.createElement('button');
+    btn.className = 'accion-card';
+    btn.style.textAlign = 'center';
+    btn.style.cursor = 'pointer';
+    btn.innerHTML = `<span class="nome" style="display:block;">${op}</span>`;
+    btn.onclick = ()=> jogoResponder(op, btn);
+    wrap.appendChild(btn);
+  });
+}
+
+function jogoResponder(escolha, btnEl){
+  if(!jogoRespondendo) return;
+  jogoRespondendo = false;
+  const pergunta = JOGO_PERGUNTAS[jogoIndiceAtual];
+  const feedback = document.getElementById('jogo-feedback');
+  const botoes = document.querySelectorAll('#jogo-opciones .accion-card');
+
+  botoes.forEach(b=>{
+    const texto = b.querySelector('.nome').textContent;
+    if(texto === pergunta.correta){ b.style.borderColor = 'var(--teal-bright)'; b.style.background = 'rgba(47,191,159,0.15)'; }
+    if(texto === escolha && escolha !== pergunta.correta){ b.style.borderColor = 'var(--danger)'; b.style.background = 'rgba(228,87,74,0.15)'; }
+  });
+
+  if(escolha === pergunta.correta){
+    jogoPontuacao += 10;
+    jogoSequencia += 1;
+    feedback.textContent = '✅ Certo!';
+    feedback.style.color = 'var(--teal-bright)';
+  } else {
+    jogoSequencia = 0;
+    feedback.textContent = `❌ Errado! A resposta era "${pergunta.correta}"`;
+    feedback.style.color = 'var(--danger)';
+  }
+  document.getElementById('jogo-pontuacao').textContent = `⭐ ${jogoPontuacao}`;
+  document.getElementById('jogo-sequencia').textContent = `🔥 ${jogoSequencia}`;
+
+  setTimeout(jogoNovaPergunta, 1400);
+}
+
+function jogoReiniciar(){
+  jogoPontuacao = 0;
+  jogoSequencia = 0;
+  jogoPerguntasUsadas = [];
+  document.getElementById('jogo-pontuacao').textContent = '⭐ 0';
+  document.getElementById('jogo-sequencia').textContent = '🔥 0';
+  jogoNovaPergunta();
+}
+
+
 let historicoCompleto = [];
 let historicoPaginaActual = 0;
 let historicoUltimoAlumnoId = null;
@@ -943,13 +1073,16 @@ function mostrarAba(aba){
     material: document.getElementById('btn-aba-material'),
     cronograma: document.getElementById('btn-aba-cronograma'),
     desafios: document.getElementById('btn-aba-desafios'),
+    jogo: document.getElementById('btn-aba-jogo'),
   };
   const abas = {
     progresso: document.getElementById('aba-progresso'),
     material: document.getElementById('aba-material'),
     cronograma: document.getElementById('aba-cronograma'),
     desafios: document.getElementById('aba-desafios'),
+    jogo: document.getElementById('aba-jogo'),
   };
+  if(aba === 'jogo' && jogoIndiceAtual === null) jogoNovaPergunta();
   Object.keys(botones).forEach(key=>{
     if(key === aba){
       botones[key].className = 'btn coral';
@@ -1924,6 +2057,8 @@ document.getElementById('btn-aba-progresso').onclick = ()=> mostrarAba('progress
 document.getElementById('btn-aba-material').onclick = ()=> mostrarAba('material');
 document.getElementById('btn-aba-cronograma').onclick = ()=> mostrarAba('cronograma');
 document.getElementById('btn-aba-desafios').onclick = ()=> mostrarAba('desafios');
+document.getElementById('btn-aba-jogo').onclick = ()=> mostrarAba('jogo');
+document.getElementById('btn-jogo-reiniciar').onclick = jogoReiniciar;
 
 document.getElementById('select-modulo-cronograma').addEventListener('change', cargarModuloCronogramaEditor);
 document.getElementById('btn-guardar-cronograma').onclick = async ()=>{
