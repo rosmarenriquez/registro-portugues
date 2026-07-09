@@ -656,6 +656,11 @@
           <tbody></tbody>
         </table>
         <p class="empty hidden" id="historico-aluno-vacio">Você ainda não tem pontos registrados. Vai atrás do primeiro!</p>
+        <div class="row" id="historico-paginacao" style="justify-content:center;align-items:center;gap:14px;margin-top:12px;">
+          <button id="historico-anterior" style="background:var(--teal-dark);border:1px solid var(--line);color:var(--cream);width:32px;height:32px;border-radius:50%;cursor:pointer;font-size:14px;">◀</button>
+          <span id="historico-pagina-texto" style="font-size:12.5px;color:var(--cream-dim);"></span>
+          <button id="historico-siguiente" style="background:var(--teal-dark);border:1px solid var(--line);color:var(--cream);width:32px;height:32px;border-radius:50%;cursor:pointer;font-size:14px;">▶</button>
+        </div>
       </div>
 
       <div class="panel">
@@ -903,6 +908,34 @@ const DICAS = [
 let dicaIndex = 0;
 let dicaIntervalo = null;
 let carruselIniciado = false;
+const HISTORICO_POR_PAGINA = 10;
+let historicoCompleto = [];
+let historicoPaginaActual = 0;
+let historicoUltimoAlumnoId = null;
+
+function renderHistoricoPagina(){
+  const tbody = document.querySelector('#tabla-historico-aluno tbody');
+  const paginacionEl = document.getElementById('historico-paginacao');
+  const totalPaginas = Math.max(1, Math.ceil(historicoCompleto.length / HISTORICO_POR_PAGINA));
+  historicoPaginaActual = Math.min(historicoPaginaActual, totalPaginas - 1);
+  const inicio = historicoPaginaActual * HISTORICO_POR_PAGINA;
+  const items = historicoCompleto.slice(inicio, inicio + HISTORICO_POR_PAGINA);
+
+  tbody.innerHTML = '';
+  items.forEach(h=>{
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td>${h.date}</td><td>${h.action}</td><td style="text-align:right;color:var(--gold);">+${h.points}</td>`;
+    tbody.appendChild(tr);
+  });
+
+  document.getElementById('historico-pagina-texto').textContent = `Página ${historicoPaginaActual + 1} de ${totalPaginas}`;
+  document.getElementById('historico-anterior').disabled = historicoPaginaActual === 0;
+  document.getElementById('historico-anterior').style.opacity = historicoPaginaActual === 0 ? '0.35' : '1';
+  document.getElementById('historico-siguiente').disabled = historicoPaginaActual >= totalPaginas - 1;
+  document.getElementById('historico-siguiente').style.opacity = historicoPaginaActual >= totalPaginas - 1 ? '0.35' : '1';
+  paginacionEl.classList.toggle('hidden', totalPaginas <= 1);
+}
+
 let tipoReporteSeleccionado = 'problema';
 function mostrarAba(aba){
   const botones = {
@@ -1524,18 +1557,20 @@ async function renderAluno(){
     gridLogros.appendChild(card);
   });
 
-  const tbody = document.querySelector('#tabla-historico-aluno tbody');
-  tbody.innerHTML = '';
   const historicoVacio = document.getElementById('historico-aluno-vacio');
-  if(data.history.length === 0){
+  const paginacionEl = document.getElementById('historico-paginacao');
+  historicoCompleto = [...data.history].reverse();
+  if(id !== historicoUltimoAlumnoId){
+    historicoPaginaActual = 0;
+    historicoUltimoAlumnoId = id;
+  }
+  if(historicoCompleto.length === 0){
     historicoVacio.classList.remove('hidden');
+    paginacionEl.classList.add('hidden');
+    document.querySelector('#tabla-historico-aluno tbody').innerHTML = '';
   } else {
     historicoVacio.classList.add('hidden');
-    [...data.history].reverse().forEach(h=>{
-      const tr = document.createElement('tr');
-      tr.innerHTML = `<td>${h.date}</td><td>${h.action}</td><td style="text-align:right;color:var(--gold);">+${h.points}</td>`;
-      tbody.appendChild(tr);
-    });
+    renderHistoricoPagina();
   }
 
   const misReportesLista = document.getElementById('mis-reportes-lista');
@@ -1923,6 +1958,17 @@ document.getElementById('btn-enviar-reporte').onclick = async ()=>{
 };
 
 document.getElementById('select-aluno').addEventListener('change', renderAluno);
+
+document.getElementById('historico-anterior').onclick = ()=>{
+  if(historicoPaginaActual > 0){
+    historicoPaginaActual--;
+    renderHistoricoPagina();
+  }
+};
+document.getElementById('historico-siguiente').onclick = ()=>{
+  historicoPaginaActual++;
+  renderHistoricoPagina();
+};
 document.getElementById('select-aluno-prof').addEventListener('change', (e)=>{
   const data = cargarAlumno(e.target.value);
   document.getElementById('input-nota-profesor').value = data.note || '';
