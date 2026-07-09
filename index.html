@@ -81,7 +81,7 @@
   /* trilha */
   .trilha-wrap{position:relative;padding:36px 10px 10px;overflow-x:auto;}
   svg.trilha{display:block;min-width:760px;}
-  .estacao-label{font-family:'Inter',sans-serif;font-size:10.5px;fill:var(--cream-dim);}
+  .estacao-label{font-family:'Inter',sans-serif;font-size:9.5px;fill:var(--cream-dim);}
   .estacao-label.atual{fill:var(--gold);font-weight:700;}
   .estacao-pontos{font-family:'Space Mono',monospace;font-size:9.5px;fill:var(--cream-dim);opacity:.7;}
   /* cards de acao */
@@ -642,7 +642,7 @@
           </div>
         </div>
         <div class="trilha-wrap">
-          <svg class="trilha" id="svg-trilha" viewBox="0 0 900 130" xmlns="http://www.w3.org/2000/svg"></svg>
+          <svg class="trilha" id="svg-trilha" viewBox="0 0 900 150" xmlns="http://www.w3.org/2000/svg"></svg>
         </div>
       </div>
 
@@ -1530,8 +1530,9 @@ function dibujarTrilha(totalPuntos){
   const espacoPorEstacao = 110;
   const width = (n - 1) * espacoPorEstacao;
   const viewBoxWidth = width + marginX * 2;
+  const alturaSvg = 150;
   const y = 55;
-  svg.setAttribute('viewBox', `0 0 ${viewBoxWidth} 130`);
+  svg.setAttribute('viewBox', `0 0 ${viewBoxWidth} ${alturaSvg}`);
   svg.style.minWidth = Math.max(viewBoxWidth, 760) + 'px';
   const nivel = nivelDe(totalPuntos);
   let fraccion;
@@ -1547,6 +1548,13 @@ function dibujarTrilha(totalPuntos){
   const progresoWidth = width * Math.min(posGlobal,1);
   svgContent += `<line x1="${marginX}" y1="${y}" x2="${marginX+progresoWidth}" y2="${y}" stroke="#F4B740" stroke-width="3" stroke-linecap="round"/>`;
 
+  function partirEmDuasLinhas(nome){
+    const palavras = nome.split(' ');
+    if(palavras.length === 1) return [nome];
+    const meio = Math.ceil(palavras.length / 2);
+    return [palavras.slice(0, meio).join(' '), palavras.slice(meio).join(' ')];
+  }
+
   NIVELES.forEach((niv,i)=>{
     const cx = marginX + (width * i/(n-1));
     const activo = i <= nivel.idx;
@@ -1555,9 +1563,14 @@ function dibujarTrilha(totalPuntos){
     const stroke = activo ? '#F4B740' : '#D8CBAA';
     svgContent += `<circle cx="${cx}" cy="${y}" r="${esActual?9:6}" fill="${fill}" stroke="${stroke}" stroke-width="2"/>`;
     svgContent += `<text x="${cx}" y="${y-18}" text-anchor="middle" class="estacao-label ${esActual?'atual':''}">${niv.emoji}</text>`;
-    const nomeCorto = niv.nombre.length > 16 ? niv.nombre.slice(0,14)+'…' : niv.nombre;
-    svgContent += `<text x="${cx}" y="${y+24}" text-anchor="middle" class="estacao-label ${esActual?'atual':''}">${nomeCorto}</text>`;
-    svgContent += `<text x="${cx}" y="${y+36}" text-anchor="middle" class="estacao-pontos">${niv.max===Infinity? niv.min+'+' : niv.min+'-'+niv.max}</text>`;
+    const linhas = partirEmDuasLinhas(niv.nombre);
+    svgContent += `<text x="${cx}" y="${y+24}" text-anchor="middle" class="estacao-label ${esActual?'atual':''}">`;
+    linhas.forEach((linha, li)=>{
+      svgContent += `<tspan x="${cx}" dy="${li===0?0:12}">${linha}</tspan>`;
+    });
+    svgContent += `</text>`;
+    const yPontos = linhas.length > 1 ? y+50 : y+36;
+    svgContent += `<text x="${cx}" y="${yPontos}" text-anchor="middle" class="estacao-pontos">${niv.max===Infinity? niv.min+'+' : niv.min+'-'+niv.max}</text>`;
   });
 
   const markerX = marginX + width * Math.min(posGlobal,1);
