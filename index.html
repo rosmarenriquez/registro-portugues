@@ -583,6 +583,12 @@
       </div>
 
       <div id="aba-progresso">
+      <div class="panel hidden" id="panel-perfil-aluno" style="border-color:var(--teal-bright);">
+        <p class="eyebrow">🎯 Meu Objetivo</p>
+        <p class="sub" style="margin:0 0 4px;" id="perfil-cidade-texto"></p>
+        <p style="margin:0;font-size:14.5px;" id="perfil-objetivo-texto"></p>
+      </div>
+
       <div class="panel hidden" id="panel-aviso-pago" style="border-color:var(--coral);background:linear-gradient(135deg, rgba(255,107,74,0.18), var(--bg-panel));">
         <p class="eyebrow" style="color:var(--coral);">💰 Aviso</p>
         <p id="aviso-pago-texto" style="margin:0;font-size:14.5px;"></p>
@@ -708,6 +714,14 @@
           <input type="text" id="input-accion-custom" placeholder="Nome da ação" style="flex:2;min-width:140px;">
           <input type="number" id="input-puntos-custom" placeholder="Pontos" style="flex:1;min-width:80px;">
           <button class="btn secondary" id="btn-accion-custom">Somar</button>
+        </div>
+        <div class="divider"></div>
+        <p class="eyebrow">🎯 Perfil do aluno</p>
+        <p class="sub" style="margin:0 0 8px;">Cidade e objetivo do aluno selecionado acima — ele/ela vai ver isso na sua página.</p>
+        <input type="text" id="input-perfil-cidade" placeholder="Cidade (ex: Monterrey, Nuevo León)" style="width:100%;background:var(--teal-dark);border:1px solid var(--line);color:var(--cream);font-family:'Inter',sans-serif;font-size:14px;padding:10px 12px;border-radius:10px;outline:none;margin-bottom:8px;">
+        <textarea id="input-perfil-objetivo" rows="3" placeholder="Objetivo (ex: Aprender português para trabalhar com a região de LATAM)" style="width:100%;background:var(--teal-dark);border:1px solid var(--line);color:var(--cream);font-family:'Inter',sans-serif;font-size:14px;padding:10px 12px;border-radius:10px;outline:none;resize:vertical;"></textarea>
+        <div class="row" style="margin-top:8px;">
+          <button class="btn coral" id="btn-guardar-perfil">Salvar perfil</button>
         </div>
         <div class="divider"></div>
         <p class="eyebrow">Mensagem para o aluno</p>
@@ -1260,7 +1274,7 @@ let listaLista = false;    // true cuando ya llegó la primera respuesta de Fire
 
 function cargarAlumno(id){
   // Ya no se pide a Firestore: los datos llegan solos vía onSnapshot y viven en studentsMap
-  return studentsMap[id] || {total:0, history:[], note:''};
+  return studentsMap[id] || {total:0, history:[], note:'', cidade:'', objetivo:''};
 }
 
 function refrescarUI(){
@@ -1446,6 +1460,16 @@ async function renderAluno(){
   const alumno = roster.find(s => s.id === id);
 
   document.getElementById('saludo-aluno').textContent = `Olá, ${alumno ? alumno.name : ''}! 👋`;
+
+  const panelPerfil = document.getElementById('panel-perfil-aluno');
+  if(data.objetivo && data.objetivo.trim() !== ''){
+    document.getElementById('perfil-cidade-texto').textContent = data.cidade ? `📍 ${data.cidade}` : '';
+    document.getElementById('perfil-objetivo-texto').textContent = data.objetivo;
+    panelPerfil.classList.remove('hidden');
+  } else {
+    panelPerfil.classList.add('hidden');
+  }
+
   document.getElementById('nivel-emoji-nome').textContent = 'Nível atual';
   document.getElementById('aluno-total').textContent = data.total + ' pts';
   document.getElementById('badge-nivel').textContent = nivel.emoji + ' ' + nivel.nombre;
@@ -1554,6 +1578,8 @@ async function renderProfessor(){
   if(selectProf.value !== ultimoAlumnoNotaMostrado){
     const data = cargarAlumno(selectProf.value);
     document.getElementById('input-nota-profesor').value = data.note || '';
+    document.getElementById('input-perfil-cidade').value = data.cidade || '';
+    document.getElementById('input-perfil-objetivo').value = data.objetivo || '';
     ultimoAlumnoNotaMostrado = selectProf.value;
   }
 
@@ -1653,6 +1679,16 @@ async function guardarNota(id, texto){
   }catch(e){
     console.error('Error al guardar la nota', e);
     alert('Não foi possível salvar a mensagem. Verifique sua conexão.');
+  }
+}
+
+async function guardarPerfil(id, cidade, objetivo){
+  if(!id) return;
+  try{
+    await setDoc(doc(db, 'students', id), {cidade, objetivo}, {merge:true});
+  }catch(e){
+    console.error('Error al guardar el perfil', e);
+    alert('Não foi possível salvar o perfil. Verifique sua conexão.');
   }
 }
 
@@ -1829,6 +1865,16 @@ document.getElementById('btn-guardar-nota').onclick = async ()=>{
   setTimeout(()=>{ btn.textContent = 'Salvar mensagem'; }, 1500);
 };
 
+document.getElementById('btn-guardar-perfil').onclick = async ()=>{
+  const id = document.getElementById('select-aluno-prof').value;
+  const cidade = document.getElementById('input-perfil-cidade').value;
+  const objetivo = document.getElementById('input-perfil-objetivo').value;
+  const btn = document.getElementById('btn-guardar-perfil');
+  await guardarPerfil(id, cidade, objetivo);
+  btn.textContent = 'Salvo!';
+  setTimeout(()=>{ btn.textContent = 'Salvar perfil'; }, 1500);
+};
+
 function seleccionarTipoReporte(tipo){
   tipoReporteSeleccionado = tipo;
   const btnProblema = document.getElementById('btn-tipo-problema');
@@ -1880,6 +1926,8 @@ document.getElementById('select-aluno').addEventListener('change', renderAluno);
 document.getElementById('select-aluno-prof').addEventListener('change', (e)=>{
   const data = cargarAlumno(e.target.value);
   document.getElementById('input-nota-profesor').value = data.note || '';
+  document.getElementById('input-perfil-cidade').value = data.cidade || '';
+  document.getElementById('input-perfil-objetivo').value = data.objetivo || '';
   ultimoAlumnoNotaMostrado = e.target.value;
 });
 
