@@ -972,16 +972,27 @@ let jogoIndiceAtual = null;
 let jogoPontuacao = 0;
 let jogoSequencia = 0;
 let jogoRespondendo = false;
-let jogoPerguntasUsadas = [];
+let jogoFila = [];
+
+function jogoEmbaralharFila(evitarPrimeiro){
+  const fila = JOGO_PERGUNTAS.map((_, i) => i);
+  for(let i = fila.length - 1; i > 0; i--){
+    const j = Math.floor(Math.random() * (i + 1));
+    [fila[i], fila[j]] = [fila[j], fila[i]];
+  }
+  if(evitarPrimeiro !== null && fila.length > 1 && fila[0] === evitarPrimeiro){
+    [fila[0], fila[1]] = [fila[1], fila[0]];
+  }
+  return fila;
+}
 
 function jogoNovaPergunta(){
   jogoRespondendo = true;
   document.getElementById('jogo-feedback').textContent = '';
-  if(jogoPerguntasUsadas.length >= JOGO_PERGUNTAS.length) jogoPerguntasUsadas = [];
-  let idx;
-  do { idx = Math.floor(Math.random() * JOGO_PERGUNTAS.length); }
-  while(jogoPerguntasUsadas.includes(idx) && jogoPerguntasUsadas.length < JOGO_PERGUNTAS.length);
-  jogoPerguntasUsadas.push(idx);
+  if(jogoFila.length === 0){
+    jogoFila = jogoEmbaralharFila(jogoIndiceAtual);
+  }
+  const idx = jogoFila.shift();
   jogoIndiceAtual = idx;
   const pergunta = JOGO_PERGUNTAS[idx];
 
@@ -1032,7 +1043,7 @@ function jogoResponder(escolha, btnEl){
 function jogoReiniciar(){
   jogoPontuacao = 0;
   jogoSequencia = 0;
-  jogoPerguntasUsadas = [];
+  jogoFila = [];
   document.getElementById('jogo-pontuacao').textContent = '⭐ 0';
   document.getElementById('jogo-sequencia').textContent = '🔥 0';
   jogoNovaPergunta();
@@ -1729,10 +1740,18 @@ async function renderAluno(){
     misReportesVacio.classList.add('hidden');
     misReportes.forEach(r=>{
       const row = document.createElement('div');
-      row.className = 'roster-item';
+      row.style.border = '1px solid var(--line)';
+      row.style.borderRadius = '10px';
+      row.style.padding = '10px 12px';
+      row.style.marginBottom = '8px';
       const iconoTipo = r.tipo === 'sugestao' ? '💡' : '🐛';
-      row.innerHTML = `<span class="name" style="font-weight:400;font-size:13.5px;">${r.resuelto ? '✅' : '🔴'} ${iconoTipo} ${r.message} <span style="color:var(--cream-dim);font-size:11px;">(${r.date})</span></span>
-        <span class="pts" style="color:${r.resuelto ? 'var(--teal-bright)' : 'var(--coral)'};">${r.resuelto ? 'Resolvido' : 'Pendente'}</span>`;
+      row.innerHTML = `
+        <div class="flexbetween">
+          <span class="name" style="font-weight:400;font-size:13.5px;">${r.resuelto ? '✅' : '🔴'} ${iconoTipo} ${r.message} <span style="color:var(--cream-dim);font-size:11px;">(${r.date})</span></span>
+          <span class="pts" style="color:${r.resuelto ? 'var(--teal-bright)' : 'var(--coral)'};font-size:11.5px;">${r.resuelto ? 'Resolvido' : 'Pendente'}</span>
+        </div>
+        ${r.resposta ? `<div style="margin-top:8px;background:var(--teal-dark);border-radius:8px;padding:8px 10px;"><p style="margin:0 0 4px;font-size:11px;color:var(--teal-bright);">💬 Resposta do professor:</p><p style="margin:0;font-size:13px;">${r.resposta}</p></div>` : ''}
+      `;
       misReportesLista.appendChild(row);
     });
   }
@@ -1908,6 +1927,12 @@ async function marcarReporteResuelto(id){
   catch(e){ console.error('Error al marcar reporte', e); }
 }
 
+async function responderReporte(id, resposta){
+  if(!resposta || !resposta.trim()) return;
+  try{ await setDoc(doc(db, 'reportes', id), {resposta: resposta.trim()}, {merge:true}); }
+  catch(e){ console.error('Error al responder reporte', e); alert('Não foi possível enviar a resposta. Verifique sua conexão.'); }
+}
+
 async function eliminarReporte(id){
   try{ await deleteDoc(doc(db, 'reportes', id)); }
   catch(e){ console.error('Error al eliminar reporte', e); }
@@ -1926,30 +1951,43 @@ function renderReportes(){
   }
   vacio.classList.add('hidden');
 
-  pendientes.forEach(r=>{
-    const row = document.createElement('div');
-    row.className = 'roster-item';
+  function crearTarjetaReporte(r, resuelto){
     const iconoTipo = r.tipo === 'sugestao' ? '💡' : '🐛';
-    row.innerHTML = `<span class="name" style="font-weight:500;">🔴 ${iconoTipo} <b>${r.studentName}</b> — ${r.message} <span style="color:var(--cream-dim);font-size:11px;">(${r.date})</span></span>
-      <span style="display:flex;gap:8px;">
-        <button class="btn secondary" style="padding:5px 10px;font-size:11px;" data-resolver="${r.id}">Resolvido</button>
-        <button class="btn danger" style="padding:5px 10px;font-size:11px;" data-borrar="${r.id}">Excluir</button>
-      </span>`;
-    row.querySelector('[data-resolver]').onclick = (e)=> marcarReporteResuelto(e.target.dataset.resolver);
-    row.querySelector('[data-borrar]').onclick = (e)=> eliminarReporte(e.target.dataset.borrar);
-    lista.appendChild(row);
-  });
+    const card = document.createElement('div');
+    card.style.border = '1px solid var(--line)';
+    card.style.borderRadius = '10px';
+    card.style.padding = '12px 14px';
+    card.style.marginBottom = '10px';
+    if(resuelto) card.style.opacity = '0.6';
 
-  resueltos.forEach(r=>{
-    const row = document.createElement('div');
-    row.className = 'roster-item';
-    row.style.opacity = '0.5';
-    const iconoTipo = r.tipo === 'sugestao' ? '💡' : '🐛';
-    row.innerHTML = `<span class="name" style="font-weight:400;">✅ ${iconoTipo} ${r.studentName} — ${r.message}</span>
-      <button class="btn danger" style="padding:5px 10px;font-size:11px;" data-borrar="${r.id}">Excluir</button>`;
-    row.querySelector('[data-borrar]').onclick = (e)=> eliminarReporte(e.target.dataset.borrar);
-    lista.appendChild(row);
-  });
+    card.innerHTML = `
+      <div class="flexbetween" style="align-items:flex-start;">
+        <span style="font-size:13.5px;">${resuelto ? '✅' : '🔴'} ${iconoTipo} <b>${r.studentName}</b> — ${r.message} <span style="color:var(--cream-dim);font-size:11px;">(${r.date})</span></span>
+      </div>
+      <div style="margin-top:8px;${r.resposta ? 'background:var(--teal-dark);border-radius:8px;padding:8px 10px;' : ''}">
+        ${r.resposta ? `<p style="margin:0 0 4px;font-size:11px;color:var(--teal-bright);">Sua resposta:</p><p style="margin:0;font-size:13px;">${r.resposta}</p>` : ''}
+      </div>
+      <div class="row" style="margin-top:8px;">
+        <input type="text" placeholder="Escrever uma resposta..." data-resposta-input="${r.id}" value="${r.resposta ? r.resposta.replace(/"/g,'&quot;') : ''}" style="flex:1;min-width:140px;background:var(--teal-dark);border:1px solid var(--line);color:var(--cream);font-family:'Inter',sans-serif;font-size:12.5px;padding:7px 10px;border-radius:8px;outline:none;">
+        <button class="btn secondary" style="padding:5px 10px;font-size:11px;" data-responder="${r.id}">Responder</button>
+        ${!resuelto ? `<button class="btn secondary" style="padding:5px 10px;font-size:11px;" data-resolver="${r.id}">Resolvido</button>` : ''}
+        <button class="btn danger" style="padding:5px 10px;font-size:11px;" data-borrar="${r.id}">Excluir</button>
+      </div>
+    `;
+    card.querySelector('[data-responder]').onclick = (e)=>{
+      const input = card.querySelector('[data-resposta-input]');
+      responderReporte(r.id, input.value);
+      e.target.textContent = 'Enviado!';
+      setTimeout(()=>{ e.target.textContent = 'Responder'; }, 1200);
+    };
+    const btnResolver = card.querySelector('[data-resolver]');
+    if(btnResolver) btnResolver.onclick = (e)=> marcarReporteResuelto(e.target.dataset.resolver);
+    card.querySelector('[data-borrar]').onclick = (e)=> eliminarReporte(e.target.dataset.borrar);
+    return card;
+  }
+
+  pendientes.forEach(r=> lista.appendChild(crearTarjetaReporte(r, false)));
+  resueltos.forEach(r=> lista.appendChild(crearTarjetaReporte(r, true)));
 }
 
 
