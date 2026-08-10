@@ -1588,7 +1588,7 @@ function refrescarUI(){
 
 // Escucha en tiempo real la lista de alumnos
 onSnapshot(collection(db, 'roster'), (snapshot)=>{
-  roster = snapshot.docs.map(d => ({id: d.id, name: d.data().name}));
+  roster = snapshot.docs.map(d => ({id: d.id, name: d.data().name, grupo: d.data().grupo}));
   listaLista = true;
   refrescarUI();
 });
