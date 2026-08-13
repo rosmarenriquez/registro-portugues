@@ -1538,6 +1538,35 @@ const GRUPO_PADRAO = 'Corujas 1';
 let grupos = [GRUPO_PADRAO];
 let grupoAtual = GRUPO_PADRAO;
 
+onSnapshot(
+  doc(db, 'config', 'grupos'),
+  (snap) => {
+    const lista = snap.exists() ? snap.data().lista : null;
+
+    grupos = Array.isArray(lista) && lista.length > 0
+      ? lista
+      : [GRUPO_PADRAO];
+
+    if (!grupos.includes(grupoAtual)) {
+      grupoAtual = grupos[0];
+    }
+
+    if (profesorDesbloqueado) {
+      renderProfessor();
+    }
+  },
+  (error) => {
+    console.error('Erro ao carregar grupos:', error);
+
+    grupos = [GRUPO_PADRAO];
+    grupoAtual = GRUPO_PADRAO;
+
+    if (profesorDesbloqueado) {
+      renderProfessor();
+    }
+  }
+);
+
 async function guardarGrupos(lista){
   try{ await setDoc(doc(db, 'config', 'grupos'), {lista}, {merge:true}); }
   catch(e){ console.error('Error al guardar grupos', e); alert('Não foi possível salvar. Verifique sua conexão.'); }
