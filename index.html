@@ -1906,6 +1906,10 @@ async function renderProfessor(){
 
   const grupoRoster = rosterDoGrupo(grupoAtual);
 
+  console.log('ROSTER COMPLETO:', roster);
+  console.log('GRUPO ACTUAL:', grupoAtual);
+  console.log('ALUMNOS DEL GRUPO:', grupoRoster);
+
   const selectProf = document.getElementById('select-aluno-prof');
   const selectDeshacer = document.getElementById('select-aluno-deshacer');
   poblarSelect(selectProf, 'Sem alunos neste grupo', grupoRoster);
