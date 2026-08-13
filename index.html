@@ -723,6 +723,16 @@
 
     <div id="professor-contenido" class="hidden">
 
+      <div class="panel" style="border-color:var(--gold);">
+        <p class="eyebrow">👥 Grupo atual</p>
+        <p class="sub" style="margin:0 0 10px;">Tudo abaixo (alunos, ranking, pagamentos) se refere ao grupo selecionado.</p>
+        <select id="select-grupo-professor" style="margin-bottom:10px;"></select>
+        <div class="row">
+          <input type="text" id="input-novo-grupo" placeholder="Nome do novo grupo (ex: Corujas 2)" style="flex:1;min-width:180px;">
+          <button class="btn secondary" id="btn-criar-grupo">+ Criar grupo</button>
+        </div>
+      </div>
+
       <div class="panel">
         <p class="eyebrow">Adicionar aluno</p>
         <div class="row">
@@ -899,7 +909,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-const TEACHER_PIN = "1379";
+const TEACHER_PIN = "1234";
 let profesorDesbloqueado = false;
 
 const params = new URLSearchParams(window.location.search);
@@ -1524,7 +1534,44 @@ function actualizarControlAvisoPago(){
 }
 
 
-let roster = [];           // [{id, name}]
+const GRUPO_PADRAO = 'Corujas 1';
+let grupos = [GRUPO_PADRAO];
+let grupoAtual = GRUPO_PADRAO;
+
+onSnapshot(doc(db, 'config', 'grupos'), (snap)=>{
+  const lista = snap.exists() ? snap.data().lista : null;
+  grupos = (lista && lista.length > 0) ? lista : [GRUPO_PADRAO];
+  if(!grupos.includes(grupoAtual)) grupoAtual = grupos[0];
+  if(profesorDesbloqueado){
+    poblarSelectGrupo();
+    renderProfessor();
+  }
+});
+
+async function guardarGrupos(lista){
+  try{ await setDoc(doc(db, 'config', 'grupos'), {lista}, {merge:true}); }
+  catch(e){ console.error('Error al guardar grupos', e); alert('Não foi possível salvar. Verifique sua conexão.'); }
+}
+
+function poblarSelectGrupo(){
+  const select = document.getElementById('select-grupo-professor');
+  if(!select) return;
+  const valorPrevio = select.value;
+  select.innerHTML = '';
+  grupos.forEach(g=>{
+    const opt = document.createElement('option');
+    opt.value = g;
+    opt.textContent = g;
+    select.appendChild(opt);
+  });
+  select.value = grupos.includes(valorPrevio) ? valorPrevio : grupoAtual;
+}
+
+function rosterDoGrupo(grupo){
+  return roster.filter(s => (s.grupo || GRUPO_PADRAO) === grupo);
+}
+
+let roster = [];           // [{id, name, grupo}]
 let studentsMap = {};      // { id: {total, history:[]} }
 let listaLista = false;    // true cuando ya llegó la primera respuesta de Firestore
 
@@ -1541,7 +1588,7 @@ function refrescarUI(){
 
 // Escucha en tiempo real la lista de alumnos
 onSnapshot(collection(db, 'roster'), (snapshot)=>{
-  roster = snapshot.docs.map(d => ({id: d.id, name: d.data().name}));
+  roster = snapshot.docs.map(d => ({id: d.id, name: d.data().name, grupo: d.data().grupo}));
   listaLista = true;
   refrescarUI();
 });
@@ -1604,22 +1651,23 @@ function uid(){
   return Date.now().toString(36) + Math.random().toString(36).slice(2,7);
 }
 
-function poblarSelect(select, incluirVacio){
+function poblarSelect(select, incluirVacio, listaCustom){
+  const lista = listaCustom || roster;
   const valorPrevio = select.value;
   select.innerHTML = '';
-  if(roster.length === 0){
+  if(lista.length === 0){
     const opt = document.createElement('option');
     opt.textContent = incluirVacio || 'Sin alumnos';
     select.appendChild(opt);
     return;
   }
-  roster.forEach(s=>{
+  lista.forEach(s=>{
     const opt = document.createElement('option');
     opt.value = s.id;
     opt.textContent = s.name;
     select.appendChild(opt);
   });
-  if(roster.some(s=>s.id === valorPrevio)){
+  if(lista.some(s=>s.id === valorPrevio)){
     select.value = valorPrevio;
   }
 }
@@ -1754,14 +1802,17 @@ async function renderAluno(){
   document.getElementById('aluno-total').textContent = data.total + ' pts';
   document.getElementById('badge-nivel').textContent = nivel.emoji + ' ' + nivel.nombre;
 
-  const totales = roster.map(s => cargarAlumno(s.id).total);
+  const meuGrupo = (alumno && alumno.grupo) || GRUPO_PADRAO;
+  const colegasDoGrupo = rosterDoGrupo(meuGrupo);
+
+  const totales = colegasDoGrupo.map(s => cargarAlumno(s.id).total);
   const posicion = 1 + totales.filter(t => t > data.total).length;
-  document.getElementById('badge-posicion').textContent = `🏆 ${posicion}º lugar de ${roster.length}`;
+  document.getElementById('badge-posicion').textContent = `🏆 ${posicion}º lugar de ${colegasDoGrupo.length}`;
 
   const tbodyClasif = document.getElementById('tabla-classificacion-body');
   tbodyClasif.innerHTML = '';
   const medalhas = ['🥇','🥈','🥉'];
-  const listaOrdenada = roster
+  const listaOrdenada = colegasDoGrupo
     .map(s => ({...s, total: cargarAlumno(s.id).total}))
     .sort((a,b) => b.total - a.total);
   let posAtual = 0, totalAnterior = null;
@@ -1850,10 +1901,14 @@ async function renderAluno(){
 let ultimoAlumnoNotaMostrado = null;
 
 async function renderProfessor(){
+  poblarSelectGrupo();
+
+  const grupoRoster = rosterDoGrupo(grupoAtual);
+
   const selectProf = document.getElementById('select-aluno-prof');
   const selectDeshacer = document.getElementById('select-aluno-deshacer');
-  poblarSelect(selectProf);
-  poblarSelect(selectDeshacer);
+  poblarSelect(selectProf, 'Sem alunos neste grupo', grupoRoster);
+  poblarSelect(selectDeshacer, 'Sem alunos neste grupo', grupoRoster);
 
   const grid = document.getElementById('grid-acciones');
   grid.innerHTML = '';
@@ -1880,7 +1935,7 @@ async function renderProfessor(){
   if(!desafioSemanaEditando) cargarDesafioEditor();
 
   const selectPagamento = document.getElementById('select-aluno-pagamento');
-  poblarSelect(selectPagamento);
+  poblarSelect(selectPagamento, 'Sem alunos neste grupo', grupoRoster);
   renderResumoPagamentos();
   renderHistoricoPagamentos();
 }
@@ -1889,13 +1944,14 @@ async function renderRanking(){
   const lista = document.getElementById('ranking-lista');
   const vacio = document.getElementById('ranking-vacio');
   lista.innerHTML = '';
-  if(roster.length === 0){
+  const grupoRoster = rosterDoGrupo(grupoAtual);
+  if(grupoRoster.length === 0){
     vacio.classList.remove('hidden');
     return;
   }
   vacio.classList.add('hidden');
 
-  const items = await Promise.all(roster.map(async s=>{
+  const items = await Promise.all(grupoRoster.map(async s=>{
     const data = await cargarAlumno(s.id);
     return {...s, total: data.total};
   }));
@@ -1944,7 +2000,7 @@ async function agregarAlumno(nombre){
   nombre = nombre.trim();
   if(!nombre) return;
   try{
-    const nuevoDoc = await addDoc(collection(db, 'roster'), {name: nombre});
+    const nuevoDoc = await addDoc(collection(db, 'roster'), {name: nombre, grupo: grupoAtual});
     await setDoc(doc(db, 'students', nuevoDoc.id), {total:0, history:[], note:''}, {merge:true});
   }catch(e){
     console.error('Error al agregar alumno', e);
@@ -2063,7 +2119,7 @@ function renderResumoPagamentos(){
   const tbody = document.querySelector('#tabla-resumo-pagamentos tbody');
   if(!tbody) return;
   tbody.innerHTML = '';
-  roster.forEach(s=>{
+  rosterDoGrupo(grupoAtual).forEach(s=>{
     const pagosDoAluno = pagamentos.filter(p => p.studentId === s.id);
     const total = pagosDoAluno.reduce((acc,p)=> acc + (p.valor||0), 0);
     const ultimo = pagosDoAluno.length > 0
@@ -2209,6 +2265,25 @@ document.getElementById('btn-bloquear').onclick = ()=>{
   document.getElementById('input-pin').value = '';
   document.getElementById('professor-lock').classList.remove('hidden');
   document.getElementById('professor-contenido').classList.add('hidden');
+};
+
+document.getElementById('select-grupo-professor').addEventListener('change', (e)=>{
+  grupoAtual = e.target.value;
+  renderProfessor();
+});
+
+document.getElementById('btn-criar-grupo').onclick = async ()=>{
+  const input = document.getElementById('input-novo-grupo');
+  const nombre = input.value.trim();
+  if(!nombre) return;
+  if(grupos.includes(nombre)){
+    alert('Já existe um grupo com esse nome.');
+    return;
+  }
+  const novaLista = [...grupos, nombre];
+  await guardarGrupos(novaLista);
+  grupoAtual = nombre;
+  input.value = '';
 };
 
 document.getElementById('btn-agregar-alumno').onclick = async ()=>{
