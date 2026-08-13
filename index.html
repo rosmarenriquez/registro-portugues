@@ -1538,19 +1538,6 @@ const GRUPO_PADRAO = 'Corujas 1';
 let grupos = [GRUPO_PADRAO];
 let grupoAtual = GRUPO_PADRAO;
 
-grupos = [GRUPO_PADRAO];
-grupoAtual = GRUPO_PADRAO;
-renderProfessor();
-  (error) => {
-    console.error('Erro ao carregar grupos:', error);
-
-    grupos = [GRUPO_PADRAO];
-    grupoAtual = GRUPO_PADRAO;
-
-    renderProfessor();
-  }
-);
-
 async function guardarGrupos(lista){
   try{ await setDoc(doc(db, 'config', 'grupos'), {lista}, {merge:true}); }
   catch(e){ console.error('Error al guardar grupos', e); alert('Não foi possível salvar. Verifique sua conexão.'); }
