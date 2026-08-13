@@ -1538,15 +1538,30 @@ const GRUPO_PADRAO = 'Corujas 1';
 let grupos = [GRUPO_PADRAO];
 let grupoAtual = GRUPO_PADRAO;
 
-onSnapshot(doc(db, 'config', 'grupos'), (snap)=>{
-  const lista = snap.exists() ? snap.data().lista : null;
-  grupos = (lista && lista.length > 0) ? lista : [GRUPO_PADRAO];
-  if(!grupos.includes(grupoAtual)) grupoAtual = grupos[0];
-  if(profesorDesbloqueado){
-    poblarSelectGrupo();
+onSnapshot(
+  doc(db, 'config', 'grupos'),
+  (snap) => {
+    const lista = snap.exists() ? snap.data().lista : null;
+
+    grupos = Array.isArray(lista) && lista.length > 0
+      ? lista
+      : [GRUPO_PADRAO];
+
+    if (!grupos.includes(grupoAtual)) {
+      grupoAtual = grupos[0];
+    }
+
+    renderProfessor();
+  },
+  (error) => {
+    console.error('Erro ao carregar grupos:', error);
+
+    grupos = [GRUPO_PADRAO];
+    grupoAtual = GRUPO_PADRAO;
+
     renderProfessor();
   }
-});
+);
 
 async function guardarGrupos(lista){
   try{ await setDoc(doc(db, 'config', 'grupos'), {lista}, {merge:true}); }
@@ -1568,7 +1583,10 @@ function poblarSelectGrupo(){
 }
 
 function rosterDoGrupo(grupo){
-  return roster.filter(s => (s.grupo || GRUPO_PADRAO) === grupo);
+  return roster.filter(s => {
+    const grupoAluno = s.grupo || GRUPO_PADRAO;
+    return grupoAluno === grupo;
+  });
 }
 
 let roster = [];           // [{id, name, grupo}]
@@ -1587,10 +1605,18 @@ function refrescarUI(){
 }
 
 // Escucha en tiempo real la lista de alumnos
-onSnapshot(collection(db, 'roster'), (snapshot)=>{
-  roster = snapshot.docs.map(d => ({id: d.id, name: d.data().name, grupo: d.data().grupo}));
-  listaLista = true;
-  refrescarUI();
+onSnapshot(collection(db, 'roster'), (snap) => {
+  roster = snap.docs.map(d => {
+    const data = d.data();
+
+    return {
+      id: d.id,
+      name: data.name,
+      grupo: data.grupo || GRUPO_PADRAO
+    };
+  });
+
+  renderProfessor();
 });
 
 // Escucha en tiempo real los puntos/historial de todos los alumnos
